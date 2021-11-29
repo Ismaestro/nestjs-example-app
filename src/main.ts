@@ -16,17 +16,15 @@ async function bootstrap() {
         ? minimumLoggerLevels
         : minimumLoggerLevels.concat(['debug', 'verbose']),
   });
+  const appConfig = app.get(AppConfigService);
 
   app.useGlobalPipes(new ValidationPipe());
 
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
-  app.use(helmet());
+  app.use(helmet({ contentSecurityPolicy: (appConfig.environment === 'localhost') ? false : undefined }));
 
-  const appConfig = app.get(AppConfigService);
-
-  // Cors
   if (appConfig.corsEnabled) {
     app.enableCors();
   }

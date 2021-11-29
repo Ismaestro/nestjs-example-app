@@ -52,7 +52,7 @@ export class PostResolver {
   }
 
   @Query(() => PostConnection)
-  async publishedPosts(
+  async searchPosts(
     @Args() { after, before, first, last }: PaginationArgs,
     @Args({ name: 'query', type: () => String, nullable: true })
     query: string,
@@ -91,14 +91,6 @@ export class PostResolver {
     return this.prisma.user
       .findUnique({ where: { id: id.userId } })
       .posts({ where: { published: true } });
-
-    // or
-    // return this.prisma.posts.findMany({
-    //   where: {
-    //     published: true,
-    //     author: { id: id.userId }
-    //   }
-    // });
   }
 
   @Query(() => Post)

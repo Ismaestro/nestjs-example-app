@@ -29,7 +29,7 @@ export class AuthService {
     return compare(password, hashedPassword);
   }
 
-  async createUser(payload: SignupInput): Promise<Token> {
+  async signup(payload: SignupInput): Promise<Token> {
     const hashedPassword = await this.hashPassword(payload.password);
 
     try {
@@ -108,7 +108,7 @@ export class AuthService {
   }
 
   hashPassword(password: string): Promise<string> {
-    return hash(password, this.appConfig.bcryptSaltRounds);
+    return hash(password, Number(this.appConfig.bcryptSaltRounds));
   }
 
   private generateAccessToken(payload: { userId: string }): string {

@@ -2,12 +2,12 @@ import { IsNotEmpty } from 'class-validator';
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class CreatePostInput {
+export class CreateHeroInput {
   @Field()
   @IsNotEmpty()
-  content: string;
+  realName: string;
 
   @Field()
   @IsNotEmpty()
-  title: string;
+  alterEgo: string;
 }

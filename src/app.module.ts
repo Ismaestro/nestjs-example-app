@@ -5,8 +5,8 @@ import { AppConfigModule } from './config/app/app-config.module';
 import { AppConfigService } from './config/app/app-config.service';
 import { AuthModule } from './authentication/auth.module';
 import { UserModule } from './models/user/user.module';
-import { PostModule } from './models/post/post.module';
 import { SharedModule } from './shared/shared.module';
+import { HeroModule } from './models/hero/hero.module';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { SharedModule } from './shared/shared.module';
     SharedModule,
     AuthModule,
     UserModule,
-    PostModule,
+    HeroModule,
   ],
   providers: [],
 })

@@ -4,51 +4,62 @@ const prisma = new PrismaClient();
 
 async function main() {
   await prisma.user.deleteMany();
-  await prisma.post.deleteMany();
+  await prisma.hero.deleteMany();
 
   console.log('Seeding...');
 
-  const user1 = await prisma.user.create({
+  await prisma.user.create({
     data: {
-      email: 'lisa@simpson.com',
-      firstname: 'Lisa',
-      lastname: 'Simpson',
-      password: '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm', // secret42
-      role: 'USER',
-      posts: {
-        create: {
-          title: 'Join us for Prisma Day 2019 in Berlin',
-          content: 'https://www.prisma.io/day/',
-          published: true,
+      email: 'maverick@topgun.com',
+      firstname: 'Pete',
+      lastname: 'Mitchell',
+      password: '$2b$10$yjh4MYBO/eNJKxcpODqbt.dQ/0u80wV.bR5uFRv7n27bmHI0glw1G', // Secret42
+      role: 'ADMIN',
+      heroes: {
+        createMany: {
+          data: [
+            {
+              realName: 'Peter Parker',
+              alterEgo: 'Spiderman',
+              published: true,
+              votes: 0,
+              image: 'https://i.ibb.co/5G7jfdg/spiderman.jpg',
+            },
+            {
+              realName: 'Tsubasa Ōzora',
+              alterEgo: 'Oliver Atton',
+              published: true,
+              votes: 0,
+              image: 'https://i.ibb.co/kh3ytZg/oliver.jpg',
+            },
+            {
+              realName: 'Kakarotto',
+              alterEgo: 'Goku',
+              published: true,
+              votes: 0,
+              image: 'https://i.ibb.co/s5bd4BX/goku.png',
+            },
+            {
+              realName: 'Bruce Wayne',
+              alterEgo: 'Batman',
+              published: true,
+              votes: 0,
+              image: 'https://i.ibb.co/HP55tkv/batman.jpg',
+            },
+            {
+              realName: 'Clark Joseph Kent',
+              alterEgo: 'Superman',
+              published: true,
+              votes: 0,
+              image: 'https://i.ibb.co/TqvdYyJ/superman.jpg',
+            },
+          ],
         },
       },
     },
   });
-  const user2 = await prisma.user.create({
-    data: {
-      email: 'bart@simpson.com',
-      firstname: 'Bart',
-      lastname: 'Simpson',
-      role: 'ADMIN',
-      password: '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm', // secret42
-      posts: {
-        create: [
-          {
-            title: 'Subscribe to GraphQL Weekly for community news',
-            content: 'https://graphqlweekly.com/',
-            published: true,
-          },
-          {
-            title: 'Follow Prisma on Twitter',
-            content: 'https://twitter.com/prisma',
-            published: false,
-          },
-        ],
-      },
-    },
-  });
 
-  console.log({ user1, user2 });
+  console.log('Data loaded!');
 }
 
 main()

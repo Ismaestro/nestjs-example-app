@@ -7,7 +7,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import {Logger, UseGuards} from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import { UserEntity } from './user.decorator';
 import { User } from './shared/user.model';
 import { ChangePasswordInput } from './dto/change-password.input';
@@ -27,9 +27,7 @@ export class UserResolver {
 
   @Query(() => User)
   async me(@UserEntity() user: User): Promise<User> {
-    this.logger.verbose(
-        `User "${user.email}" retrieving himself.`,
-    );
+    this.logger.verbose(`User "${user.email}" retrieving himself.`);
     return user;
   }
 
@@ -55,8 +53,8 @@ export class UserResolver {
     );
   }
 
-  @ResolveField('posts')
-  posts(@Parent() author: User) {
-    return this.prisma.user.findUnique({ where: { id: author.id } }).posts();
+  @ResolveField('heroes')
+  heroes(@Parent() author: User) {
+    return this.prisma.user.findUnique({ where: { id: author.id } }).heroes();
   }
 }

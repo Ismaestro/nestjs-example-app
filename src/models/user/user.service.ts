@@ -11,13 +11,17 @@ export class UserService {
     private authService: AuthService
   ) {}
 
-  updateUser(userId: string, newUserData: UpdateUserInput) {
+  async updateUser(userId: string, newUserData: UpdateUserInput) {
     return this.prisma.user.update({
       data: newUserData,
       where: {
         id: userId,
       },
     });
+  }
+
+  getHeroes(author: {id: string}) {
+    return this.prisma.user.findUnique({ where: { id: author.id } }).heroes();
   }
 
   async changePassword(

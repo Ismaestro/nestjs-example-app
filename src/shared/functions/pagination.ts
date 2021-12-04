@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { PageInfo } from './page-info.model';
+import { PageInfo } from '../models/page-info.model';
 import { Type } from '@nestjs/common';
 
 export default function Paginated<TItem>(TItemClass: Type<TItem>) {
@@ -17,9 +17,6 @@ export default function Paginated<TItem>(TItemClass: Type<TItem>) {
   abstract class PaginatedType {
     @Field(() => [EdgeType], { nullable: true })
     edges: Array<EdgeType>;
-
-    // @Field((type) => [TItemClass], { nullable: true })
-    // nodes: Array<TItem>;
 
     @Field(() => PageInfo)
     pageInfo: PageInfo;

@@ -1,5 +1,5 @@
 import { InputType, registerEnumType } from '@nestjs/graphql';
-import { Order } from '../order/order';
+import { Order } from '../../../shared/functions/order';
 
 export enum HeroOrderField {
   id = 'id',

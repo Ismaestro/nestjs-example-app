@@ -1,5 +1,4 @@
-import { PrismaService } from 'nestjs-prisma';
-import { PaginationArgs } from './pagination/pagination.args';
+import { PaginationArgs } from '../../shared/args/pagination.args';
 import { UserIdArgs } from '../user/dto/user-id.args';
 import {
   Args,
@@ -10,7 +9,6 @@ import {
   Resolver,
   Subscription,
 } from '@nestjs/graphql';
-import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { PubSub } from 'graphql-subscriptions/';
 import { UserEntity } from 'src/models/user/user.decorator';
 import { User } from 'src/models/user/shared/user.model';
@@ -21,12 +19,13 @@ import { CreateHeroInput } from './dto/create-hero.input';
 import { HeroConnection } from './hero-connection.model';
 import { HeroOrder } from './dto/hero-order.input';
 import { HeroIdArgs } from './dto/hero-id.args';
+import { HeroService } from './hero.service';
 
 const pubSub = new PubSub();
 
 @Resolver(() => Hero)
 export class HeroResolver {
-  constructor(private prisma: PrismaService) {}
+  constructor(private heroService: HeroService) {}
 
   @Subscription(() => Hero)
   heroCreated() {
@@ -39,16 +38,7 @@ export class HeroResolver {
     @UserEntity() user: User,
     @Args('data') data: CreateHeroInput
   ) {
-    const newHero = this.prisma.hero.create({
-      data: {
-        realName: data.realName,
-        alterEgo: data.alterEgo,
-        published: false,
-        image: '',
-        votes: 0,
-        authorId: user.id,
-      },
-    });
+    const newHero = this.heroService.createHero(user, data);
     await pubSub.publish('heroCreated', { heroCreated: newHero });
     return newHero;
   }
@@ -65,38 +55,25 @@ export class HeroResolver {
     })
     orderBy: HeroOrder
   ) {
-    return await findManyCursorConnection(
-      (args) =>
-        this.prisma.hero.findMany({
-          include: { author: true },
-          where: {
-            alterEgo: { contains: query || '' },
-          },
-          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : null,
-          ...args,
-        }),
-      () =>
-        this.prisma.hero.count({
-          where: {
-            alterEgo: { contains: query || '' },
-          },
-        }),
-      { first, last, before, after }
+    return await this.heroService.searchHeroes(
+      query,
+      { after, before, first, last },
+      orderBy
     );
   }
 
   @Query(() => [Hero])
-  userHeroes(@Args() id: UserIdArgs) {
-    return this.prisma.user.findUnique({ where: { id: id.userId } }).heroes();
+  userHeroes(@Args() userIdArgs: UserIdArgs) {
+    return this.heroService.getUserHeroes(userIdArgs);
   }
 
   @Query(() => Hero)
   async hero(@Args() heroIdArgs: HeroIdArgs) {
-    return this.prisma.hero.findUnique({ where: { id: heroIdArgs.heroId } });
+    return this.heroService.getHero(heroIdArgs);
   }
 
   @ResolveField('author')
   async author(@Parent() hero: Hero) {
-    return this.prisma.hero.findUnique({ where: { id: hero.id } }).author();
+    return this.heroService.getAuthor(hero);
   }
 }

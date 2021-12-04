@@ -1,5 +1,5 @@
 import { ObjectType } from '@nestjs/graphql';
-import PaginatedResponse from './pagination/pagination';
+import PaginatedResponse from '../../shared/functions/pagination';
 import { Hero } from './hero.model';
 
 @ObjectType()

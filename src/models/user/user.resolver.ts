@@ -1,4 +1,3 @@
-import { PrismaService } from 'nestjs-prisma';
 import {
   Args,
   Mutation,
@@ -20,10 +19,7 @@ import { GraphqlAuthGuard } from '../../authentication/graphql-auth.guard';
 export class UserResolver {
   private logger = new Logger('UserResolver');
 
-  constructor(
-    private userService: UserService,
-    private prisma: PrismaService
-  ) {}
+  constructor(private userService: UserService) {}
 
   @Query(() => User)
   async me(@UserEntity() user: User): Promise<User> {
@@ -55,6 +51,6 @@ export class UserResolver {
 
   @ResolveField('heroes')
   heroes(@Parent() author: User) {
-    return this.prisma.user.findUnique({ where: { id: author.id } }).heroes();
+    return this.userService.getHeroes(author);
   }
 }

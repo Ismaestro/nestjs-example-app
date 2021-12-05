@@ -1,8 +1,11 @@
 import { PrismaService } from 'nestjs-prisma';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {BadRequestException, ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import { AuthService } from '../../authentication/auth.service';
 import { UpdateUserInput } from './dto/update-user.input';
 import { ChangePasswordInput } from './dto/change-password.input';
+import {User} from './shared/user.model';
+import {HeroIdArgs} from '../hero/dto/hero-id.args';
+import {PublicErrors} from '../../shared/enums/public-errors.enum';
 
 @Injectable()
 export class UserService {
@@ -16,6 +19,22 @@ export class UserService {
       data: newUserData,
       where: {
         id: userId,
+      },
+    });
+  }
+
+  async removeHero(user: User, heroIdArgs: HeroIdArgs) {
+    const userHeroes = await this.getHeroes(user);
+    if (!userHeroes?.find(hero => hero.id === heroIdArgs.heroId)) {
+      throw new NotFoundException({
+        code: PublicErrors.HERO_NOT_FOUND,
+        message: `Hero not found`
+      });
+    }
+
+    return await this.prisma.hero.delete({
+      where: {
+        id: heroIdArgs.heroId,
       },
     });
   }
@@ -35,7 +54,10 @@ export class UserService {
     );
 
     if (!passwordValid) {
-      throw new BadRequestException('Invalid password');
+      throw new BadRequestException({
+        code: PublicErrors.INVALID_CREDENTIALS,
+        message: `Invalid credentials`
+      });
     }
 
     const hashedPassword = await this.authService.hashPassword(

@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { User } from '../user/shared/user.model';
 import { CreateHeroInput } from './dto/create-hero.input';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import { UserIdArgs } from '../user/dto/user-id.args';
 import { HeroIdArgs } from './dto/hero-id.args';
 import { Hero } from './hero.model';
 
@@ -44,12 +43,6 @@ export class HeroService {
         }),
       { first, last, before, after }
     );
-  }
-
-  getUserHeroes(userIdArgs: UserIdArgs) {
-    return this.prisma.user
-      .findUnique({ where: { id: userIdArgs.userId } })
-      .heroes();
   }
 
   getHero(heroIdArgs: HeroIdArgs) {

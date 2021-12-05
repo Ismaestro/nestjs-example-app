@@ -1,0 +1,5 @@
+export enum PublicErrors {
+    USER_DUPLICATED = 10000,
+    INVALID_CREDENTIALS = 11000,
+    HERO_NOT_FOUND = 12000,
+}

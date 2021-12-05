@@ -13,6 +13,8 @@ import { ChangePasswordInput } from './dto/change-password.input';
 import { UserService } from 'src/models/user/user.service';
 import { UpdateUserInput } from './dto/update-user.input';
 import { GraphqlAuthGuard } from '../../authentication/graphql-auth.guard';
+import {Hero} from '../hero/hero.model';
+import {HeroIdArgs} from '../hero/dto/hero-id.args';
 
 @Resolver(() => User)
 @UseGuards(GraphqlAuthGuard)
@@ -34,6 +36,15 @@ export class UserResolver {
     @Args('data') newUserData: UpdateUserInput
   ) {
     return this.userService.updateUser(user.id, newUserData);
+  }
+
+  @UseGuards(GraphqlAuthGuard)
+  @Mutation(() => Hero)
+  async removeHero(
+      @UserEntity() user: User,
+      @Args() heroIdArgs: HeroIdArgs
+  ) {
+    return this.userService.removeHero(user, heroIdArgs);
   }
 
   @UseGuards(GraphqlAuthGuard)

@@ -1,5 +1,4 @@
 import { PaginationArgs } from '../../shared/args/pagination.args';
-import { UserIdArgs } from '../user/dto/user-id.args';
 import {
   Args,
   Mutation,
@@ -60,11 +59,6 @@ export class HeroResolver {
       { after, before, first, last },
       orderBy
     );
-  }
-
-  @Query(() => [Hero])
-  userHeroes(@Args() userIdArgs: UserIdArgs) {
-    return this.heroService.getUserHeroes(userIdArgs);
   }
 
   @Query(() => Hero)

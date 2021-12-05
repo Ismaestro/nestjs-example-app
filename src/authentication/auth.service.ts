@@ -13,6 +13,7 @@ import { compare, hash } from 'bcrypt';
 import { SignupInput } from './dto/signup.input';
 import { Token } from './token.model';
 import { AuthErrors } from './enums/auth-errors';
+import {PublicErrors} from '../shared/enums/public-errors.enum';
 
 @Injectable()
 export class AuthService {
@@ -49,7 +50,10 @@ export class AuthService {
         e instanceof Prisma.PrismaClientKnownRequestError &&
         e.code === AuthErrors.USER_DUPLICATED
       ) {
-        throw new ConflictException(`Email ${payload.email} already used.`);
+        throw new ConflictException({
+          code: PublicErrors.USER_DUPLICATED,
+          message: `Email ${payload.email} already used.`
+        });
       } else {
         throw new Error(e);
       }
@@ -60,7 +64,10 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { email } });
 
     if (!user) {
-      throw new NotFoundException(`No user found for email: ${email}`);
+      throw new NotFoundException({
+        code: PublicErrors.INVALID_CREDENTIALS,
+        message: `Invalid credentials`
+      });
     }
 
     const passwordValid = await AuthService.validatePassword(
@@ -69,7 +76,10 @@ export class AuthService {
     );
 
     if (!passwordValid) {
-      throw new BadRequestException('Invalid password');
+      throw new BadRequestException({
+        code: PublicErrors.INVALID_CREDENTIALS,
+        message: `Invalid credentials`
+      });
     }
 
     return this.generateTokens({

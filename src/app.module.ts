@@ -7,6 +7,7 @@ import { AuthModule } from './authentication/auth.module';
 import { UserModule } from './models/user/user.module';
 import { SharedModule } from './shared/shared.module';
 import { HeroModule } from './models/hero/hero.module';
+import { GraphQLError } from 'graphql';
 
 @Module({
   imports: [
@@ -22,6 +23,9 @@ import { HeroModule } from './models/hero/hero.module';
         debug: appConfig.graphqlDebug,
         playground: appConfig.graphqlPlaygroundEnabled,
         context: ({ req }) => ({ req }),
+        formatError: (error: GraphQLError) => {
+          return error.extensions.exception?.response;
+        },
       }),
       inject: [AppConfigService],
       imports: [AppConfigModule],

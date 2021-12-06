@@ -40,7 +40,7 @@ async function bootstrap() {
     SwaggerModule.setup(appConfig.swaggerPath, app, document);
   }
 
-  const port = appConfig.port;
+  const port = process.env.PORT;
   await app.listen(port);
   logger.log(`Application listening on port ${port}`);
 }

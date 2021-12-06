@@ -9,3 +9,5 @@ coverage/
 prisma/dbml
 .env
 schema.graphql
+
+npm-debug.log

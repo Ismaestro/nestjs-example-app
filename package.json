@@ -14,6 +14,9 @@
     "type": "git",
     "url": "https://github.com/Ismaestro/nestjs-example-app.git"
   },
+  "engines": {
+    "node": "14.18.1"
+  },
   "bugs": {
     "url": "https://github.com/Ismaestro/nestjs-example-app/issues"
   },
@@ -47,7 +50,7 @@
     "docker:seed": "docker exec -it nest-api npm run seed",
     "docker": "docker-compose up -d",
     "docker:build": "docker-compose build",
-    "docker:build:server": "docker build -t nest-prisma-server . && docker run -d -t -p 3000:3000 nest-prisma-server"
+    "docker:build:server": "docker build -t nestjs-heroes-app . && docker run -d -t -p 3000:3000 nestjs-heroes-app"
   },
   "dependencies": {
     "@devoxa/prisma-relay-cursor-connection": "2.0.3",

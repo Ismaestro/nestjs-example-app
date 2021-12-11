@@ -1,10 +1,12 @@
 import { PrismaService } from 'nestjs-prisma';
-import { Injectable } from '@nestjs/common';
+import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import { User } from '../user/shared/user.model';
 import { CreateHeroInput } from './dto/create-hero.input';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { HeroIdArgs } from './dto/hero-id.args';
 import { Hero } from './hero.model';
+import { PublicErrors } from '../../shared/enums/public-errors.enum';
+import { UserIdArgs } from '../user/dto/user-id.args';
 
 @Injectable()
 export class HeroService {
@@ -17,10 +19,42 @@ export class HeroService {
         alterEgo: data.alterEgo,
         published: false,
         image: '',
-        votes: 0,
         authorId: user.id,
       },
     });
+  }
+
+  async voteHero(user: User, heroIdArgs: HeroIdArgs) {
+    const heroToVote = await this.getHero(heroIdArgs);
+    if (!heroToVote.published) {
+      throw new NotFoundException({
+        code: PublicErrors.HERO_NOT_FOUND,
+        message: `Hero not found`,
+      });
+    }
+
+    try {
+      return await this.prisma.hero.update({
+        where: { id: heroIdArgs.heroId },
+        data: {
+          usersVoted: {
+            create: [
+              {
+                assignedAt: new Date(),
+                userId: user.id,
+              },
+            ],
+          },
+        },
+      });
+    } catch (e) {
+      if (e.code === 'P2002') {
+        throw new ConflictException({
+          code: PublicErrors.HERO_ALREADY_VOTED,
+          message: `You already voted this hero. Just once please.`,
+        });
+      }
+    }
   }
 
   async searchHeroes(query, { after, before, first, last }, orderBy) {
@@ -45,8 +79,23 @@ export class HeroService {
     );
   }
 
+  getUser(userIdArgs: UserIdArgs) {
+    return this.prisma.user.findUnique({ where: { id: userIdArgs.userId } });
+  }
+
   getHero(heroIdArgs: HeroIdArgs) {
     return this.prisma.hero.findUnique({ where: { id: heroIdArgs.heroId } });
+  }
+
+  async getHeroVotes(heroIdArgs: HeroIdArgs) {
+    const heroVotes = await this.prisma.votesOnHeroes.findMany({
+      where: {
+        hero: {
+          id: heroIdArgs.heroId,
+        },
+      },
+    });
+    return {votes: heroVotes.length};
   }
 
   getAuthor(hero: Hero) {

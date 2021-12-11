@@ -42,6 +42,15 @@ export class HeroResolver {
     return newHero;
   }
 
+  @UseGuards(GraphqlAuthGuard)
+  @Mutation(() => Hero)
+  async voteHero(
+    @UserEntity() user: User,
+    @Args() heroIdArgs: HeroIdArgs
+  ) {
+    return this.heroService.voteHero(user, heroIdArgs);
+  }
+
   @Query(() => HeroConnection)
   async searchHeroes(
     @Args() { after, before, first, last }: PaginationArgs,
@@ -64,6 +73,11 @@ export class HeroResolver {
   @Query(() => Hero)
   async hero(@Args() heroIdArgs: HeroIdArgs) {
     return this.heroService.getHero(heroIdArgs);
+  }
+
+  @Query(() => Hero)
+  async heroVotes(@Args() heroIdArgs: HeroIdArgs) {
+    return this.heroService.getHeroVotes(heroIdArgs);
   }
 
   @ResolveField('author')

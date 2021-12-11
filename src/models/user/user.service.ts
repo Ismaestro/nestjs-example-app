@@ -1,11 +1,12 @@
 import { PrismaService } from 'nestjs-prisma';
-import {BadRequestException, ConflictException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import { AuthService } from '../../authentication/auth.service';
 import { UpdateUserInput } from './dto/update-user.input';
 import { ChangePasswordInput } from './dto/change-password.input';
 import {User} from './shared/user.model';
 import {HeroIdArgs} from '../hero/dto/hero-id.args';
 import {PublicErrors} from '../../shared/enums/public-errors.enum';
+import {UserIdArgs} from './dto/user-id.args';
 
 @Injectable()
 export class UserService {
@@ -71,4 +72,6 @@ export class UserService {
       where: { id: userId },
     });
   }
+
+
 }

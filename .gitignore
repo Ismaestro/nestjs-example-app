@@ -11,3 +11,4 @@ prisma/dbml
 schema.graphql
 
 npm-debug.log
+newrelic_agent.log

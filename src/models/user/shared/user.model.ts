@@ -19,6 +19,7 @@ export class User extends BaseModel {
   lastname?: string;
   role: Role;
   heroes: Hero[];
+  votedHeroes: Hero[];
   @HideField()
   password: string;
 }

@@ -10,4 +10,7 @@ export class Hero extends BaseModel {
   image: string;
   votes: number;
   author: User;
+  authorId: string;
+  usersVoted: User[];
+  userId: User;
 }

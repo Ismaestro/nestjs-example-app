@@ -63,16 +63,6 @@ npm start
 - [x] Graphql server
 - [x] Postman collection ready to import
 
-## Most important scripts
-
-| Script                      | Description                                                                                          |
-| --------------------------- | ---------------------------------------------------------------------------------------------------- |
-| npm start                   | Start the app in development mode with the english language only                                     |
-| npm run prisma:generate                   | Start the app in development mode with the english language only                                     |
-| npm run migrate:dev                   | Start the app in development mode with the english language only                                     |
-| npm run seed                   | Start the app in development mode with the english language only                                     |
-|
-
 ## Bugs and feature requests
 
 Have a bug or a feature request? Please first read the issue guidelines

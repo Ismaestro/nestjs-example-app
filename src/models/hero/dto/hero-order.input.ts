@@ -7,6 +7,7 @@ export enum HeroOrderField {
   updatedAt = 'updatedAt',
   realName = 'realName',
   alterEgo = 'alterEgo',
+  usersVoted = 'usersVoted',
 }
 
 registerEnumType(HeroOrderField, {

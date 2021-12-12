@@ -1,12 +1,15 @@
 import { PrismaService } from 'nestjs-prisma';
-import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from '../user/shared/user.model';
 import { CreateHeroInput } from './dto/create-hero.input';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { HeroIdArgs } from './dto/hero-id.args';
 import { Hero } from './hero.model';
 import { PublicErrors } from '../../shared/enums/public-errors.enum';
-import { UserIdArgs } from '../user/dto/user-id.args';
 
 @Injectable()
 export class HeroService {
@@ -26,7 +29,7 @@ export class HeroService {
 
   async voteHero(user: User, heroIdArgs: HeroIdArgs) {
     const heroToVote = await this.getHero(heroIdArgs);
-    if (!heroToVote.published) {
+    if (!heroToVote || !heroToVote.published) {
       throw new NotFoundException({
         code: PublicErrors.HERO_NOT_FOUND,
         message: `Hero not found`,
@@ -61,12 +64,22 @@ export class HeroService {
     return findManyCursorConnection(
       (args) =>
         this.prisma.hero.findMany({
-          include: { author: false },
+          include: {
+            author: false,
+            usersVoted: true,
+            _count: {
+              select: { usersVoted: true },
+            },
+          },
           where: {
             alterEgo: { contains: query || '' },
             published: true,
           },
-          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : null,
+          orderBy: (orderBy.field === 'usersVoted') ? {
+            usersVoted: {
+              _count: orderBy.direction,
+            }
+          } : orderBy ? { [orderBy.field] : orderBy.direction } : null,
           ...args,
         }),
       () =>
@@ -79,12 +92,11 @@ export class HeroService {
     );
   }
 
-  getUser(userIdArgs: UserIdArgs) {
-    return this.prisma.user.findUnique({ where: { id: userIdArgs.userId } });
-  }
-
   getHero(heroIdArgs: HeroIdArgs) {
-    return this.prisma.hero.findUnique({ where: { id: heroIdArgs.heroId } });
+    return this.prisma.hero.findUnique({
+      include: {usersVoted: true},
+      where: { id: heroIdArgs.heroId },
+    });
   }
 
   async getHeroVotes(heroIdArgs: HeroIdArgs) {
@@ -95,7 +107,7 @@ export class HeroService {
         },
       },
     });
-    return {votes: heroVotes.length};
+    return { votes: heroVotes.length };
   }
 
   getAuthor(hero: Hero) {

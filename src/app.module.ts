@@ -24,7 +24,8 @@ import { GraphQLError } from 'graphql';
         playground: appConfig.graphqlPlaygroundEnabled,
         context: ({ req }) => ({ req }),
         formatError: (error: GraphQLError) => {
-          return error.extensions.exception?.response;
+          const response = error.extensions.exception?.response;
+          return response || error;
         },
       }),
       inject: [AppConfigService],

@@ -8,10 +8,7 @@ import { AppConfigService } from '../config/app/app-config.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(
-    private readonly authService: AuthService,
-    readonly appConfig: AppConfigService
-  ) {
+  constructor(private readonly authService: AuthService, readonly appConfig: AppConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: appConfig.jwtAccessSecret,

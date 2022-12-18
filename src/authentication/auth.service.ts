@@ -13,7 +13,7 @@ import { compare, hash } from 'bcrypt';
 import { SignupInput } from './dto/signup.input';
 import { Token } from './token.model';
 import { AuthErrors } from './enums/auth-errors';
-import {PublicErrors} from '../shared/enums/public-errors.enum';
+import { PublicErrors } from '../shared/enums/public-errors.enum';
 
 @Injectable()
 export class AuthService {
@@ -23,10 +23,7 @@ export class AuthService {
     private readonly appConfig: AppConfigService
   ) {}
 
-  static validatePassword(
-    password: string,
-    hashedPassword: string
-  ): Promise<boolean> {
+  static validatePassword(password: string, hashedPassword: string): Promise<boolean> {
     return compare(password, hashedPassword);
   }
 
@@ -52,7 +49,7 @@ export class AuthService {
       ) {
         throw new ConflictException({
           code: PublicErrors.USER_DUPLICATED,
-          message: `Email ${payload.email} already used.`
+          message: `Email ${payload.email} already used.`,
         });
       } else {
         throw new Error(e);
@@ -66,19 +63,16 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException({
         code: PublicErrors.INVALID_CREDENTIALS,
-        message: `Invalid credentials`
+        message: `Invalid credentials`,
       });
     }
 
-    const passwordValid = await AuthService.validatePassword(
-      password,
-      user.password
-    );
+    const passwordValid = await AuthService.validatePassword(password, user.password);
 
     if (!passwordValid) {
       throw new BadRequestException({
         code: PublicErrors.INVALID_CREDENTIALS,
-        message: `Invalid credentials`
+        message: `Invalid credentials`,
       });
     }
 

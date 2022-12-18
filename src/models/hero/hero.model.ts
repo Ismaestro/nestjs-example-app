@@ -1,4 +1,4 @@
-import { ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { User } from '../user/shared/user.model';
 import { BaseModel } from '../../shared/models/base.model';
 
@@ -8,6 +8,7 @@ export class Hero extends BaseModel {
   alterEgo: string;
   published: boolean;
   image: string;
+  @Field(() => Number, { nullable: true })
   votes: number;
   author: User;
   authorId: string;

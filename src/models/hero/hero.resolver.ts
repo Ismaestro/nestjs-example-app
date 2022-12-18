@@ -33,10 +33,7 @@ export class HeroResolver {
 
   @UseGuards(GraphqlAuthGuard)
   @Mutation(() => Hero)
-  async createHero(
-    @UserEntity() user: User,
-    @Args('data') data: CreateHeroInput
-  ) {
+  async createHero(@UserEntity() user: User, @Args('data') data: CreateHeroInput) {
     const newHero = this.heroService.createHero(user, data);
     await pubSub.publish('heroCreated', { heroCreated: newHero });
     return newHero;
@@ -44,10 +41,7 @@ export class HeroResolver {
 
   @UseGuards(GraphqlAuthGuard)
   @Mutation(() => Hero)
-  async voteHero(
-    @UserEntity() user: User,
-    @Args() heroIdArgs: HeroIdArgs
-  ) {
+  async voteHero(@UserEntity() user: User, @Args() heroIdArgs: HeroIdArgs) {
     return this.heroService.voteHero(user, heroIdArgs);
   }
 
@@ -63,11 +57,7 @@ export class HeroResolver {
     })
     orderBy: HeroOrder
   ) {
-    return await this.heroService.searchHeroes(
-      query,
-      { after, before, first, last },
-      orderBy
-    );
+    return await this.heroService.searchHeroes(query, { after, before, first, last }, orderBy);
   }
 
   @Query(() => Hero)

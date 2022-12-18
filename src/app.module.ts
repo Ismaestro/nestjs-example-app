@@ -1,16 +1,18 @@
-import { GraphQLModule } from '@nestjs/graphql';
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { PrismaModule } from 'nestjs-prisma';
 import { AppConfigModule } from './config/app/app-config.module';
 import { AppConfigService } from './config/app/app-config.service';
 import { AuthModule } from './authentication/auth.module';
 import { UserModule } from './models/user/user.module';
 import { SharedModule } from './shared/shared.module';
-import { HeroModule } from './models/hero/hero.module';
 import { GraphQLError } from 'graphql';
+import { GraphQLModule } from '@nestjs/graphql';
+import { HealthModule } from './health/health.module';
+import { HeroModule } from './models/hero/hero.module';
 
 @Module({
   imports: [
+    HealthModule,
     AppConfigModule,
     GraphQLModule.forRootAsync({
       useFactory: async (appConfig: AppConfigService) => ({
@@ -24,8 +26,16 @@ import { GraphQLError } from 'graphql';
         playground: appConfig.graphqlPlaygroundEnabled,
         context: ({ req }) => ({ req }),
         formatError: (error: GraphQLError) => {
-          const response = error.extensions.exception?.response;
-          return response || error;
+          const exception = error.extensions?.exception?.response;
+          const logger = new Logger('GraphQLError');
+          logger.error(JSON.stringify(error));
+
+          return {
+            message: exception?.message || error.message || 'INTERNAL_SERVER_ERROR',
+            code: exception?.code || error.extensions?.response?.statusCode || 500,
+            data: exception?.data || {},
+            info: exception?.code || error.extensions?.response?.message || '',
+          };
         },
       }),
       inject: [AppConfigService],

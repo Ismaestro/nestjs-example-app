@@ -21,38 +21,44 @@
 ## Setup
 
 Install dependencies first
+
 ```bash
 npm i
 ```
 
 Create the postgres database
+
 ```bash
 npm run docker:db
 ```
 
 Generate the prisma schema
+
 ```bash
 npm run prisma:generate
 ```
 
 Run migrations to create necessary tables in the DB
+
 ```bash
 npm run migrate:dev
 ```
 
 Create first user and heroes
+
 ```bash
 npm run seed
 ```
 
 Start the application
+
 ```bash
 npm start
 ```
 
 ## What's included
 
-- [x] App deployed into Heroku. Using New relic and Postgres addons.
+- [x] App deployed into Render.
 - [x] CRUD: create, update and remove heroes with this project!
 - [x] Authentication with JWT tokens
 - [x] More logical directory structure
@@ -65,8 +71,8 @@ npm start
 
 ## Bugs and feature requests
 
-Have a bug or a feature request? Please first read the issue guidelines
-and search for existing and closed issues. If your problem or idea is not addressed yet,
+Have a bug or a feature request? Please first read the issue guidelines and search for existing and
+closed issues. If your problem or idea is not addressed yet,
 [please open a new issue](https://github.com/Ismaestro/nestjs-example-app/issues/new).
 
 ## Creators

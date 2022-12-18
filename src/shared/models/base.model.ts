@@ -9,8 +9,7 @@ export abstract class BaseModel {
   })
   createdAt: Date;
   @Field({
-    description:
-      'Identifies the date and time when the object was last updated',
+    description: 'Identifies the date and time when the object was last updated',
   })
   updatedAt: Date;
 }

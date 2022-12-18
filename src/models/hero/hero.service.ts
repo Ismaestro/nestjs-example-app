@@ -1,9 +1,5 @@
 import { PrismaService } from 'nestjs-prisma';
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from '../user/shared/user.model';
 import { CreateHeroInput } from './dto/create-hero.input';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
@@ -62,7 +58,7 @@ export class HeroService {
 
   async searchHeroes(query, { after, before, first, last }, orderBy) {
     return findManyCursorConnection(
-      (args) =>
+      args =>
         this.prisma.hero.findMany({
           include: {
             author: false,
@@ -75,11 +71,16 @@ export class HeroService {
             alterEgo: { contains: query || '' },
             published: true,
           },
-          orderBy: (orderBy.field === 'usersVoted') ? {
-            usersVoted: {
-              _count: orderBy.direction,
-            }
-          } : orderBy ? { [orderBy.field] : orderBy.direction } : null,
+          orderBy:
+            orderBy.field === 'usersVoted'
+              ? {
+                  usersVoted: {
+                    _count: orderBy.direction,
+                  },
+                }
+              : orderBy
+              ? { [orderBy.field]: orderBy.direction }
+              : null,
           ...args,
         }),
       () =>
@@ -94,7 +95,7 @@ export class HeroService {
 
   getHero(heroIdArgs: HeroIdArgs) {
     return this.prisma.hero.findUnique({
-      include: {usersVoted: true},
+      include: { usersVoted: true },
       where: { id: heroIdArgs.heroId },
     });
   }

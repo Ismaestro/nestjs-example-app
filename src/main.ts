@@ -1,12 +1,10 @@
-require ('newrelic');
-
 import { Logger, LogLevel, ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { PrismaClientExceptionFilter } from 'nestjs-prisma';
 import { AppModule } from './app.module';
 import { AppConfigService } from './config/app/app-config.service';
-import * as helmet from 'helmet';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -25,7 +23,11 @@ async function bootstrap() {
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
-  app.use(helmet({ contentSecurityPolicy: (appConfig.environment === 'localhost') ? false : undefined }));
+  app.use(
+    helmet({
+      contentSecurityPolicy: appConfig.environment === 'localhost' ? false : undefined,
+    })
+  );
 
   if (appConfig.corsEnabled) {
     app.enableCors();
@@ -42,7 +44,7 @@ async function bootstrap() {
     SwaggerModule.setup(appConfig.swaggerPath, app, document);
   }
 
-  const port = process.env.PORT;
+  const port = String(appConfig.port);
   await app.listen(port);
   logger.log(`Application listening on port ${port}`);
 }

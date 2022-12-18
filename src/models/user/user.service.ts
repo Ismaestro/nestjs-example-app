@@ -1,19 +1,15 @@
 import { PrismaService } from 'nestjs-prisma';
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { AuthService } from '../../authentication/auth.service';
 import { UpdateUserInput } from './dto/update-user.input';
 import { ChangePasswordInput } from './dto/change-password.input';
-import {User} from './shared/user.model';
-import {HeroIdArgs} from '../hero/dto/hero-id.args';
-import {PublicErrors} from '../../shared/enums/public-errors.enum';
-import {UserIdArgs} from './dto/user-id.args';
+import { User } from './shared/user.model';
+import { HeroIdArgs } from '../hero/dto/hero-id.args';
+import { PublicErrors } from '../../shared/enums/public-errors.enum';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private prisma: PrismaService,
-    private authService: AuthService
-  ) {}
+  constructor(private prisma: PrismaService, private authService: AuthService) {}
 
   async updateUser(userId: string, newUserData: UpdateUserInput) {
     return this.prisma.user.update({
@@ -29,7 +25,7 @@ export class UserService {
     if (!userHeroes?.find(hero => hero.id === heroIdArgs.heroId)) {
       throw new NotFoundException({
         code: PublicErrors.HERO_NOT_FOUND,
-        message: `Hero not found`
+        message: `Hero not found`,
       });
     }
 
@@ -40,15 +36,11 @@ export class UserService {
     });
   }
 
-  getHeroes(author: {id: string}) {
+  getHeroes(author: { id: string }) {
     return this.prisma.user.findUnique({ where: { id: author.id } }).heroes();
   }
 
-  async changePassword(
-    userId: string,
-    userPassword: string,
-    changePassword: ChangePasswordInput
-  ) {
+  async changePassword(userId: string, userPassword: string, changePassword: ChangePasswordInput) {
     const passwordValid = await AuthService.validatePassword(
       changePassword.oldPassword,
       userPassword
@@ -57,13 +49,11 @@ export class UserService {
     if (!passwordValid) {
       throw new BadRequestException({
         code: PublicErrors.INVALID_CREDENTIALS,
-        message: `Invalid credentials`
+        message: `Invalid credentials`,
       });
     }
 
-    const hashedPassword = await this.authService.hashPassword(
-      changePassword.newPassword
-    );
+    const hashedPassword = await this.authService.hashPassword(changePassword.newPassword);
 
     return this.prisma.user.update({
       data: {
@@ -72,6 +62,4 @@ export class UserService {
       where: { id: userId },
     });
   }
-
-
 }

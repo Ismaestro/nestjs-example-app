@@ -3,7 +3,7 @@ services:
   nest-api:
     container_name: nest-api
     build:
-      context: ""
+      context: ''
       dockerfile: Dockerfile
     ports:
       - 3000:3000
@@ -13,11 +13,11 @@ services:
       - .env
 
   postgres:
-    image: postgres:13
+    image: postgres:14.1-alpine
     container_name: postgres
     restart: always
     ports:
-      - 5432:5432
+      - 5433:5432
     env_file:
       - .env
     volumes:

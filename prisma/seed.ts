@@ -14,38 +14,37 @@ async function main() {
       firstname: 'Pete',
       lastname: 'Mitchell',
       password: '$2b$10$yjh4MYBO/eNJKxcpODqbt.dQ/0u80wV.bR5uFRv7n27bmHI0glw1G', // Secret42
-      role: 'ADMIN',
       heroes: {
         createMany: {
           data: [
             {
               realName: 'Peter Parker',
               alterEgo: 'Spiderman',
-              published: true,
+              public: true,
               image: 'https://i.ibb.co/5G7jfdg/spiderman.jpg',
             },
             {
               realName: 'Tsubasa Ōzora',
               alterEgo: 'Oliver Atton',
-              published: true,
+              public: true,
               image: 'https://i.ibb.co/kh3ytZg/oliver.jpg',
             },
             {
               realName: 'Kakarotto',
               alterEgo: 'Goku',
-              published: true,
+              public: true,
               image: 'https://i.ibb.co/s5bd4BX/goku.png',
             },
             {
               realName: 'Bruce Wayne',
               alterEgo: 'Batman',
-              published: true,
+              public: true,
               image: 'https://i.ibb.co/HP55tkv/batman.jpg',
             },
             {
               realName: 'Clark Joseph Kent',
               alterEgo: 'Superman',
-              published: true,
+              public: true,
               image: 'https://i.ibb.co/TqvdYyJ/superman.jpg',
             },
           ],

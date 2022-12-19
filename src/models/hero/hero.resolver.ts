@@ -70,8 +70,8 @@ export class HeroResolver {
     return this.heroService.getHeroVotes(heroIdArgs);
   }
 
-  @ResolveField('author')
-  async author(@Parent() hero: Hero) {
-    return this.heroService.getAuthor(hero);
+  @ResolveField('user')
+  async user(@Parent() hero: Hero) {
+    return this.heroService.getUser(hero);
   }
 }

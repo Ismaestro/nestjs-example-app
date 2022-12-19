@@ -5,15 +5,21 @@ import { Args, Mutation, Parent, ResolveField, Resolver } from '@nestjs/graphql'
 import { AuthService } from './auth.service';
 import { SignupInput } from './dto/signup.input';
 import { RefreshTokenInput } from './dto/refresh-token.input';
+import { GraphqlAuthGuard } from './graphql-auth.guard';
+import { UseGuards } from '@nestjs/common';
+import { OkResponse } from '../shared/models/ok-response.model';
+import { UserEntity } from '../models/user/user.decorator';
+import { DeleteAccountArgs } from './dto/delete-account.args';
+import { User } from '@prisma/client';
 
 @Resolver(() => Auth)
 export class AuthResolver {
-  constructor(private readonly auth: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Mutation(() => Auth)
   async signup(@Args('data') data: SignupInput) {
     data.email = data.email.toLowerCase();
-    const { accessToken, refreshToken } = await this.auth.signup(data);
+    const { accessToken, refreshToken } = await this.authService.signup(data);
     return {
       accessToken,
       refreshToken,
@@ -22,7 +28,10 @@ export class AuthResolver {
 
   @Mutation(() => Auth)
   async login(@Args('data') { email, password }: LoginInput) {
-    const { accessToken, refreshToken } = await this.auth.login(email.toLowerCase(), password);
+    const { accessToken, refreshToken } = await this.authService.login(
+      email.toLowerCase(),
+      password
+    );
 
     return {
       accessToken,
@@ -32,11 +41,17 @@ export class AuthResolver {
 
   @Mutation(() => Token)
   async refreshToken(@Args() { token }: RefreshTokenInput) {
-    return this.auth.refreshToken(token);
+    return this.authService.refreshToken(token);
+  }
+
+  @UseGuards(GraphqlAuthGuard)
+  @Mutation(() => OkResponse)
+  async deleteAccount(@UserEntity() user: User, @Args() { password }: DeleteAccountArgs) {
+    return this.authService.deleteAccount(user, password);
   }
 
   @ResolveField('user')
   async user(@Parent() auth: Auth) {
-    return await this.auth.getUserFromToken(auth.accessToken);
+    return await this.authService.getUserFromToken(auth.accessToken);
   }
 }

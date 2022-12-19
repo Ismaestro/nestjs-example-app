@@ -6,12 +6,11 @@ import { BaseModel } from '../../shared/models/base.model';
 export class Hero extends BaseModel {
   realName: string;
   alterEgo: string;
-  published: boolean;
+  public: boolean;
   image: string;
   @Field(() => Number, { nullable: true })
   votes: number;
-  author: User;
-  authorId: string;
+  user: User;
+  userId: string;
   usersVoted: User[];
-  userId: User;
 }

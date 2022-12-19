@@ -35,7 +35,6 @@ export class AuthService {
         data: {
           ...payload,
           password: hashedPassword,
-          role: 'USER',
         },
       });
 
@@ -79,6 +78,23 @@ export class AuthService {
     return this.generateTokens({
       userId: user.id,
     });
+  }
+
+  async deleteAccount(user: User, password: string) {
+    const passwordValid = await AuthService.validatePassword(password, user.password);
+
+    if (!passwordValid) {
+      throw new BadRequestException({
+        code: PublicErrors.INVALID_CREDENTIALS,
+        message: `Invalid credentials`,
+      });
+    }
+
+    await this.prisma.user.delete({
+      where: { id: user.id },
+    });
+
+    return { ok: true };
   }
 
   async refreshToken(token: string): Promise<Token> {

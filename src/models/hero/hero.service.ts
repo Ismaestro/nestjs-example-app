@@ -16,16 +16,16 @@ export class HeroService {
       data: {
         realName: data.realName,
         alterEgo: data.alterEgo,
-        published: false,
+        public: false,
         image: '',
-        authorId: user.id,
+        userId: user.id,
       },
     });
   }
 
   async voteHero(user: User, heroIdArgs: HeroIdArgs) {
     const heroToVote = await this.getHero(heroIdArgs);
-    if (!heroToVote || !heroToVote.published) {
+    if (!heroToVote || !heroToVote.public) {
       throw new NotFoundException({
         code: PublicErrors.HERO_NOT_FOUND,
         message: `Hero not found`,
@@ -61,7 +61,7 @@ export class HeroService {
       args =>
         this.prisma.hero.findMany({
           include: {
-            author: false,
+            user: false,
             usersVoted: true,
             _count: {
               select: { usersVoted: true },
@@ -69,7 +69,7 @@ export class HeroService {
           },
           where: {
             alterEgo: { contains: query || '' },
-            published: true,
+            public: true,
           },
           orderBy:
             orderBy.field === 'usersVoted'
@@ -111,7 +111,7 @@ export class HeroService {
     return { votes: heroVotes.length };
   }
 
-  getAuthor(hero: Hero) {
-    return this.prisma.hero.findUnique({ where: { id: hero.id } }).author();
+  getUser(hero: Hero) {
+    return this.prisma.hero.findUnique({ where: { id: hero.id } }).user();
   }
 }

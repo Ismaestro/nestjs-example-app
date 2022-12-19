@@ -21,7 +21,6 @@ model User {
   lastname    String?
   heroes      Hero[]
   votedHeroes VotesOnHeroes[]
-  role        Role
 }
 
 model Hero {
@@ -31,9 +30,9 @@ model Hero {
   realName   String
   alterEgo   String
   image      String
-  published  Boolean
-  author     User?           @relation(fields: [authorId], references: [id])
-  authorId   String?
+  public     Boolean
+  user       User?           @relation(fields: [userId], references: [id])
+  userId     String?
   usersVoted VotesOnHeroes[]
 }
 
@@ -45,9 +44,4 @@ model VotesOnHeroes {
   assignedAt DateTime @default(now())
 
   @@id([userId, heroId])
-}
-
-enum Role {
-  ADMIN
-  USER
 }

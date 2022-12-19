@@ -4,7 +4,7 @@ export const appConfigValidationSchema = Joi.object({
   ENVIRONMENT: Joi.string().valid('localhost', 'prod').required(),
   APP_NAME: Joi.string().default('NestJS Example App'),
   APP_URL: Joi.string().default('http://localhost:3000'),
-  APP_PORT: Joi.number().default(3000),
+  PORT: Joi.number().default(3000),
   APP_CORS_ENABLED: Joi.boolean().default(true),
   JWT_ACCESS_SECRET: Joi.string().required(),
   JWT_REFRESH_SECRET: Joi.string().required(),

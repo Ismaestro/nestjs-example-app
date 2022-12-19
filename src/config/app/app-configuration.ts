@@ -4,7 +4,7 @@ export default registerAs('app', () => ({
   environment: process.env.ENVIRONMENT,
   name: process.env.APP_NAME,
   url: process.env.APP_URL,
-  port: process.env.APP_PORT,
+  port: process.env.PORT,
   corsEnabled: process.env.APP_CORS_ENABLED,
   jwtAccessSecret: process.env.JWT_ACCESS_SECRET,
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,

@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches, MinLength } from 'class-validator';
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
@@ -10,9 +10,8 @@ export class SignupInput {
   @Field()
   @IsNotEmpty()
   @IsString()
-  @MinLength(8)
-  @MaxLength(32)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/, {
+  @MinLength(4)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{4,}$/, {
     message: 'password is too weak',
   })
   password: string;
@@ -22,4 +21,7 @@ export class SignupInput {
 
   @Field({ nullable: true })
   lastname?: string;
+
+  @Field({ nullable: true })
+  language?: string;
 }

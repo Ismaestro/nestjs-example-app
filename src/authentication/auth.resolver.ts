@@ -10,16 +10,20 @@ import { UseGuards } from '@nestjs/common';
 import { OkResponse } from '../shared/models/ok-response.model';
 import { UserEntity } from '../models/user/user.decorator';
 import { DeleteAccountArgs } from './dto/delete-account.args';
-import { User } from '@prisma/client';
+import { Language, User } from '@prisma/client';
+import { I18n, I18nContext } from 'nestjs-i18n';
 
 @Resolver(() => Auth)
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
   @Mutation(() => Auth)
-  async signup(@Args('data') data: SignupInput) {
+  async signup(@Args('data') data: SignupInput, @I18n() i18n: I18nContext) {
     data.email = data.email.toLowerCase();
-    const { accessToken, refreshToken } = await this.authService.signup(data);
+    const { accessToken, refreshToken } = await this.authService.signup(
+      data,
+      i18n.lang as Language
+    );
     return {
       accessToken,
       refreshToken,

@@ -9,11 +9,31 @@ import { GraphQLError } from 'graphql';
 import { GraphQLModule } from '@nestjs/graphql';
 import { HealthModule } from './health/health.module';
 import { HeroModule } from './models/hero/hero.module';
+import path from 'path';
+import {
+  AcceptLanguageResolver,
+  CookieResolver,
+  HeaderResolver,
+  I18nModule,
+  QueryResolver,
+} from 'nestjs-i18n';
 
 @Module({
   imports: [
     HealthModule,
     AppConfigModule,
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loaderOptions: {
+        path: path.join(__dirname, '/i18n/'),
+      },
+      resolvers: [
+        new QueryResolver(['lang']),
+        new HeaderResolver(['x-custom-lang']),
+        new CookieResolver(),
+        AcceptLanguageResolver,
+      ],
+    }),
     GraphQLModule.forRootAsync({
       useFactory: async (appConfig: AppConfigService) => ({
         installSubscriptionHandlers: true,

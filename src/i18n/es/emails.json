@@ -1,0 +1,25 @@
+{
+  "verifyEmail": {
+    "subject": "Confirma tu email y crea tu primer menu",
+    "title": "Confirma tu email",
+    "description": "Asi ya podrás crear tu primer menu, editar los platos y mucho mas!",
+    "button": "Confirmar email"
+  },
+  "resetPassword": {
+    "subject": "Cambia tu contraseña para continuar",
+    "title": "Cambia tu contraseña",
+    "description": "Recuerda que puedes guardarla en el navegador y asi no tendrás que volver a memorizarla :)",
+    "button": "Cambiar contraseña"
+  },
+  "passwordChanged": {
+    "subject": "Tu contraseña ha sido modificada",
+    "title": "Contraseña cambiada",
+    "description": "Se ha cambiado la contraseña de tu cuenta. Si no has sido tu, por favor, contacta urgentemente en support@randmenu.com"
+  },
+  "continueWithGoogle": {
+    "subject": "Puedes continuar con Google",
+    "title": "No necesitas cambiar la contraseña",
+    "description": "Tu cuenta esta vinculada a Google. Por favor, inicia sesión con Google y continua sin cambiar la contraseña.",
+    "button": "Iniciar sesión"
+  }
+}

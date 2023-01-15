@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Prisma, User } from '@prisma/client';
+import { Language, Prisma, User } from '@prisma/client';
 import { AppConfigService } from '../config/app/app-config.service';
 import { compare, hash } from 'bcrypt';
 import { SignupInput } from './dto/signup.input';
@@ -27,13 +27,14 @@ export class AuthService {
     return compare(password, hashedPassword);
   }
 
-  async signup(payload: SignupInput): Promise<Token> {
+  async signup(payload: SignupInput, language: Language): Promise<Token> {
     const hashedPassword = await this.hashPassword(payload.password);
 
     try {
       const user = await this.prisma.user.create({
         data: {
           ...payload,
+          language,
           password: hashedPassword,
         },
       });
@@ -57,7 +58,7 @@ export class AuthService {
   }
 
   async login(email: string, password: string): Promise<Token> {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    const user = await this.prisma.user.findUnique({ where: { email }, include: { heroes: true } });
 
     if (!user) {
       throw new NotFoundException({
@@ -75,9 +76,11 @@ export class AuthService {
       });
     }
 
-    return this.generateTokens({
+    const tokens = this.generateTokens({
       userId: user.id,
     });
+
+    return { ...tokens, ...user };
   }
 
   async deleteAccount(user: User, password: string) {

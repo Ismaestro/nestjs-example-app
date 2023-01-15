@@ -13,35 +13,40 @@ generator dbml {
 
 model User {
   id          String          @id @default(uuid())
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  createdAt   DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime        @updatedAt @db.Timestamptz(3)
   email       String          @unique
   password    String
   firstname   String?
-  lastname    String?
   heroes      Hero[]
   votedHeroes VotesOnHeroes[]
+  language    Language
 }
 
 model Hero {
   id         String          @id @default(uuid())
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
+  createdAt  DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime        @updatedAt @db.Timestamptz(3)
   realName   String
   alterEgo   String
   image      String
   public     Boolean
-  user       User?           @relation(fields: [userId], references: [id])
-  userId     String?
+  user       User?           @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId     String?         @default("")
   usersVoted VotesOnHeroes[]
 }
 
 model VotesOnHeroes {
-  user       User?    @relation(fields: [userId], references: [id])
-  userId     String
-  hero       Hero?    @relation(fields: [heroId], references: [id])
-  heroId     String
-  assignedAt DateTime @default(now())
+  user       User?    @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId     String   @default("")
+  hero       Hero?    @relation(fields: [heroId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  heroId     String   @default("")
+  assignedAt DateTime @default(now()) @db.Timestamptz(3)
 
   @@id([userId, heroId])
+}
+
+enum Language {
+  es
+  en
 }

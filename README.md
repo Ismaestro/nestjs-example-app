@@ -84,7 +84,7 @@ npm start
 
 ## What's included
 
-- [x] App deployed into Render.
+- [x] App deployed into Fy.io.
 - [x] CRUD: create, update and remove heroes with this project!
 - [x] Authentication with JWT tokens
 - [x] More logical directory structure

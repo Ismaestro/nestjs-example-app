@@ -1,4 +1,3 @@
-version: '3.7'
 services:
   nest-api:
     container_name: nest-api

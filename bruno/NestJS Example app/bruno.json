@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "NestJS Example app",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

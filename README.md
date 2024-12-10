@@ -2,13 +2,13 @@
   <h3 align="center">NestJS Example App</h3>
 
   <p align="center">
-    Example app with NestJS 7 + Prisma 2 + Postgres + Graphql
+    Example app with NestJS + Prisma + Postgres
     <br>
     <br>
     :clap::clap::tada::tada::tada::tada::clap::clap:
     <br>
     <br>
-    Base project made with much :heart:. Contains CRUD, advanced patterns, graphql and much more!
+    Base project made with much :heart:. Contains CRUD, advanced patterns and much more!
     <br>
     <br>
     <img src="https://media.giphy.com/media/BIql9p3KQWYdjq4Sxe/giphy.gif" alt="Demo example"/>
@@ -70,7 +70,7 @@ Run migrations to create necessary tables in the DB
 npm run migrate:dev
 ```
 
-Create first user and heroes
+Create first user
 
 ```bash
 npm run seed
@@ -85,14 +85,13 @@ npm start
 ## What's included
 
 - [x] App deployed into Fy.io.
-- [x] CRUD: create, update and remove heroes with this project!
+- [x] CRUD: create, update and remove users with this project!
 - [x] Authentication with JWT tokens
 - [x] More logical directory structure
 - [x] Examples of NestJS services, guards and resolvers
 - [x] Env file included with al the environment variables that are mandatory already prepared
 - [x] Prisma 2. Usage of prisma migrate and prisma studio.
-- [x] Postgres to store the users and heroes of the application
-- [x] Graphql server
+- [x] Postgres to store the users
 - [x] Postman collection ready to import
 
 ## Bugs and feature requests

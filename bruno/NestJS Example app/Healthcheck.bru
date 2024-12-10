@@ -1,0 +1,11 @@
+meta {
+  name: Healthcheck
+  type: graphql
+  seq: 1
+}
+
+get {
+  url: {{host}}/health
+  body: graphql
+  auth: none
+}

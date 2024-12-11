@@ -11,10 +11,10 @@
     Base project made with much :heart:. Contains CRUD, advanced patterns and much more!
     <br>
     <br>
-    <img src="https://media.giphy.com/media/BIql9p3KQWYdjq4Sxe/giphy.gif" alt="Demo example"/>
+    <img src="https://res.cloudinary.com/ismaestro/image/upload/v1733957891/angularexampleapp/home%20page.png" alt="Demo homepage"/>
     <br>
     <br>
-    <a href="https://angular-example-app.netlify.app/">ANGULAR DEMO HERE</a>
+    <a href="https://angular-example-app.netlify.app">ANGULAR DEMO HERE</a>
   </p>
 </p>
 
@@ -37,20 +37,27 @@ POSTGRES_PORT=5433
 POSTGRES_USERNAME=postgres
 POSTGRES_PASSWORD=postgres
 POSTGRES_DATABASE=postgres
-POSTGRES_SCHEMA=public
 
 # Prisma database connection
-DATABASE_URL=postgresql://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?schema=${POSTGRES_SCHEMA}&sslmode=prefer
+DATABASE_URL=postgresql://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}
 
 # Nest
 PORT=3000
 
 # Security
-JWT_ACCESS_SECRET=u4ayyabkATNYWAbReNxdYF6fUcCXv4jGWn97kbcF6hnKedVf28aVZ9BEVVN6KxaUnwhWBnqzhNs7WBCDqXzSThY8fLrbGb7gxaejRBLCGDAJzU58549Tkr9a9avscJbQ33wNxa3EJhb2BwyGAkQLdNwc4Dp5BUJYhy8ewJKQGaJ35GtKA8JUDVqPbLC4HyAqNSVvH6jEXuAXCqYmU8xkdQMNmX5XBXM45b57VC78U74Dn3YB4swpy7jeSvM6fWwj
-JWT_REFRESH_SECRET=W7HZVApFVRZX8LKnDr7t8S5KGSnwhszDTckq6NRTwwKp4xZKeNQQrykRTUzXRFAdudyz9rsXv5Dk43NT2cYGHKpHHXyE8dNg6nZM9v4tnz76Kz7XgnnmEm34z6cGwhQ6wGUwaHhMteKPafztZxKBbtChWdH2QKfDpR2yGfnWfTr3feACyejUKjv4a2XdPdLgaABykrcVDPh8RVkRqHNds3ACsQg5mfFdFZg9twkZUVaj2FJMGSsDNyESjpj2vhYp
-JWT_EXPIRES_IN=1d
-JWT_REFRESH_IN=7d
+JWT_ACCESS_SECRET=a8e9f3b6d4c2h7j8k5n1o3p2q9r6s4t0v5w7x8z1y3m6n2k8j9l4h5g7f1e2c3b9a0
+JWT_ACCESS_EXPIRES_IN=1d
+JWT_REFRESH_SECRET=f4g5h6j7k8l9m0n1p3o5q7r2s6t8v1w9x4z3y2k5j8h7g9f2e4c6b8a0o1m2n7p9q5
+JWT_REFRESH_EXPIRES_IN=7d
 ```
+
+And from now on, you can just go with the one time command that does everything for you:
+
+```bash
+npm run setup
+```
+
+Or go step by step. As you wish ;)
 
 Create the postgres database
 
@@ -70,7 +77,7 @@ Run migrations to create necessary tables in the DB
 npm run migrate:dev
 ```
 
-Create first user
+Seed the database with the first user
 
 ```bash
 npm run seed
@@ -84,15 +91,16 @@ npm start
 
 ## What's included
 
-- [x] App deployed into Fy.io.
-- [x] CRUD: create, update and remove users with this project!
+- [x] Example CRUD: create, read, update and delete users!
 - [x] Authentication with JWT tokens
 - [x] More logical directory structure
-- [x] Examples of NestJS services, guards and resolvers
+- [x] Examples of NestJS controllers, services, repositories, guards, interceptors, etc
 - [x] Env file included with al the environment variables that are mandatory already prepared
-- [x] Prisma 2. Usage of prisma migrate and prisma studio.
-- [x] Postgres to store the users
-- [x] Postman collection ready to import
+- [x] Usage of Prisma (An ORM) :)
+- [x] A Postgres DB to store the users
+- [x] Bruno collection ready to import
+- [x] App deployed into Fy.io.
+- 
 
 ## Bugs and feature requests
 

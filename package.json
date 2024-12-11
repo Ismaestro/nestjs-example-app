@@ -31,7 +31,8 @@
     "test:watch": "jest --watch",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prebuild": "rimraf dist",
-    "build": "nest build"
+    "build": "nest build",
+    "deploy": "fly deploy"
   },
   "dependencies": {
     "@nestjs/axios": "3.1.3",

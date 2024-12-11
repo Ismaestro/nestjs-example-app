@@ -15,6 +15,18 @@
   </p>
 </p>
 
+## What's included
+
+- [x] Example CRUD: create, read, update and delete users!
+- [x] Authentication with JWT tokens
+- [x] More logical directory structure
+- [x] Examples of NestJS controllers, services, repositories, guards, interceptors, etc
+- [x] Env file included with al the environment variables that are mandatory already prepared
+- [x] Usage of Prisma (An ORM) :)
+- [x] A Postgres DB to store the users
+- [x] Bruno collection ready to import
+- [x] App deployed into Fy.io.
+
 ## Setup
 
 Install dependencies first
@@ -85,18 +97,6 @@ Start the application
 ```bash
 npm start
 ```
-
-## What's included
-
-- [x] Example CRUD: create, read, update and delete users!
-- [x] Authentication with JWT tokens
-- [x] More logical directory structure
-- [x] Examples of NestJS controllers, services, repositories, guards, interceptors, etc
-- [x] Env file included with al the environment variables that are mandatory already prepared
-- [x] Usage of Prisma (An ORM) :)
-- [x] A Postgres DB to store the users
-- [x] Bruno collection ready to import
-- [x] App deployed into Fy.io.
 
 ## Bugs and feature requests
 

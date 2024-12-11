@@ -1,8 +1,8 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MinLength } from 'class-validator';
 
-export class SignupInput {
+export class RegisterRequest {
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsNotEmpty()
   @IsString()
@@ -10,7 +10,7 @@ export class SignupInput {
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\dA-Za-z]{4,}$/u, {
     message: 'password is too weak',
   })
-  password: string;
+  password!: string;
 
   @IsOptional()
   @IsString()

@@ -1,5 +1,0 @@
-export enum PublicError {
-  USER_DUPLICATED = 10_000,
-  USER_NOT_FOUND = 10_001,
-  INVALID_CREDENTIALS = 11_000,
-}

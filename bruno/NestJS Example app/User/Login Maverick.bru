@@ -1,0 +1,30 @@
+meta {
+  name: Login Maverick
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{host}}/{{version}}/user/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "maverick@topgun.com",
+    "password": "Secret42"
+  }
+}
+
+tests {
+  var body = res.getBody();
+  var accessTokenValue = body?.data?.accessToken;
+  if (accessTokenValue) {
+    bru.setEnvVar('accessToken', accessTokenValue);
+  }
+  var refreshTokenValue = body?.data?.refreshToken;
+  if (refreshTokenValue) {
+    bru.setEnvVar('refreshToken', refreshTokenValue);
+  }
+}

@@ -1,0 +1,35 @@
+meta {
+  name: Register
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{host}}/{{version}}/user
+  body: json
+  auth: none
+}
+
+headers {
+  Accept-Language: es-ES,fr-FR;q=0.8,en-US;q=0.7
+}
+
+body:json {
+  {
+    "email": "ramossilvanismael@gmail.com",
+    "firstname": "Ismael",
+    "password": "Secret42"
+  }
+}
+
+tests {
+  var body = res.getBody();
+  var accessTokenValue = body?.data?.accessToken;
+  if (accessTokenValue) {
+    bru.setEnvVar('accessToken', accessTokenValue);
+  }
+  var refreshTokenValue = body?.data?.refreshToken;
+  if (refreshTokenValue) {
+    bru.setEnvVar('refreshToken', refreshTokenValue);
+  }
+}

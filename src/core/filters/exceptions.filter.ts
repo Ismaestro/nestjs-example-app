@@ -7,6 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { AbstractHttpAdapter } from '@nestjs/core';
+import { AppError } from '../enums/app-error.enum';
 
 @Catch()
 export class ExceptionsFilter implements ExceptionFilter {
@@ -25,15 +26,15 @@ export class ExceptionsFilter implements ExceptionFilter {
 
     const responseBody = {
       statusCode: status,
+      internalCode: this.getExceptionInternalCode(exception),
       timestamp: new Date().toISOString(),
       path: this.httpAdapter.getRequestUrl(context.getRequest()),
       message: this.getExceptionMessage(exception),
     };
 
-    // Log the error
-    this.logger.error(`Exception caught: ${JSON.stringify(responseBody)}`);
-
-    // Send a structured error response
+    this.logger.warn(
+      `Status code: ${status}, Internal code: ${responseBody.internalCode}, Path: ${responseBody.path}, Message: ${responseBody.message}`,
+    );
     this.httpAdapter.reply(context.getResponse(), responseBody, status);
   }
 
@@ -45,5 +46,15 @@ export class ExceptionsFilter implements ExceptionFilter {
         : (response as { message?: string }).message || 'An error occurred';
     }
     return (exception as Error).message || 'Internal server error';
+  }
+
+  private getExceptionInternalCode(exception: unknown): number {
+    if (exception instanceof HttpException) {
+      const response = exception.getResponse();
+      return typeof response === 'string'
+        ? AppError.UNKNOWN_ERROR
+        : (response as { code?: number }).code || AppError.UNKNOWN_ERROR;
+    }
+    return AppError.UNKNOWN_ERROR;
   }
 }

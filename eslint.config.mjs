@@ -46,7 +46,7 @@ export default tsEslint.config(
           max: 30,
         },
       ],
-      'max-params': [
+      '@typescript-eslint/max-params': [
         'error',
         {
           max: 2,
@@ -67,6 +67,7 @@ export default tsEslint.config(
       ],
 
       // Off
+      'max-params': 'off',
       'sort-keys': 'off',
       'no-underscore-dangle': 'off',
       'sort-imports': 'off',
@@ -105,6 +106,7 @@ export default tsEslint.config(
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/no-unsafe-type-assertion': 'off',
       '@typescript-eslint/require-await': 'off',
+      '@typescript-eslint/no-unsafe-enum-comparison': 'off',
       'unicorn/prefer-top-level-await': 'off',
       'unicorn/prefer-module': 'off',
       'unicorn/no-null': 'off',

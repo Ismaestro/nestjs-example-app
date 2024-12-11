@@ -1,0 +1,21 @@
+meta {
+  name: Refresh Token
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{host}}/{{version}}/user/refresh-token
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "refreshToken": "{{refreshToken}}"
+  }
+}

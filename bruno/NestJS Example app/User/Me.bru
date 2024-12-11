@@ -5,11 +5,11 @@ meta {
 }
 
 get {
-  url: {{host}}/v1/user
+  url: {{host}}/{{version}}/user
   body: none
   auth: bearer
 }
 
 auth:bearer {
-  token: {{token}}
+  token: {{accessToken}}
 }

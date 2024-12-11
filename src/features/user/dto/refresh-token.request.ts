@@ -1,7 +1,7 @@
 import { IsJWT, IsNotEmpty } from 'class-validator';
 
-export class RefreshTokenInput {
+export class RefreshTokenRequest {
   @IsNotEmpty()
   @IsJWT()
-  token: string;
+  refreshToken!: string;
 }

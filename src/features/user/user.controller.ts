@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Headers,
+  HttpCode,
   Logger,
   Patch,
   Post,
@@ -43,6 +44,7 @@ export class UserController {
   }
 
   @Post('login')
+  @HttpCode(200)
   async login(@Body() loginRequest: LoginRequest): Promise<LoginResponse> {
     this.logger.log(`[Login]: attempting login user with email "${loginRequest.email}"`);
     return this.userService.login(loginRequest);
@@ -68,6 +70,7 @@ export class UserController {
   }
 
   @Post('refresh-token')
+  @HttpCode(200)
   @UseGuards(UserGuard)
   async refreshToken(
     @Body() refreshTokenRequest: RefreshTokenRequest,

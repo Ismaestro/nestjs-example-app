@@ -12,10 +12,7 @@
         "version",
         "app",
         "core",
-        "authentication",
-        "dashboard",
-        "home",
-        "pokemon-detail"
+        "user"
       ]
     ],
     "subject-case": [2, "always", "lower-case"],

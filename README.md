@@ -97,7 +97,6 @@ npm start
 - [x] A Postgres DB to store the users
 - [x] Bruno collection ready to import
 - [x] App deployed into Fy.io.
-- 
 
 ## Bugs and feature requests
 

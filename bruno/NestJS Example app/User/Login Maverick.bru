@@ -23,8 +23,16 @@ tests {
   if (accessTokenValue) {
     bru.setEnvVar('accessToken', accessTokenValue);
   }
-  var refreshTokenValue = body?.data?.refreshToken;
-  if (refreshTokenValue) {
-    bru.setEnvVar('refreshToken', refreshTokenValue);
+  
+  const setCookieHeader = res.headers['set-cookie'];
+  
+  if (setCookieHeader) {
+      const refreshTokenCookie = setCookieHeader.find(cookie => cookie.includes('refreshToken='));
+  
+    const match = refreshTokenCookie.match(/refreshToken=([^;]+)/);
+    if (match) {
+      const refreshToken = match[1];
+      bru.setEnvVar('refreshToken', refreshToken);
+    }
   }
 }

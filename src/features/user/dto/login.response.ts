@@ -7,9 +7,5 @@ export class LoginResponse {
   accessToken!: string;
 
   @IsNotEmpty()
-  @IsString()
-  refreshToken!: string;
-
-  @IsNotEmpty()
   user!: Omit<User, 'password'>;
 }

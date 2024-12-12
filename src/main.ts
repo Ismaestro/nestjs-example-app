@@ -8,6 +8,7 @@ import { AppConfigService } from './features/app-config/app-config.service';
 import { ExceptionsFilter } from './core/filters/exceptions.filter';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import { Environment } from './core/enums/environment.enum';
 
@@ -30,6 +31,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.use(cookieParser());
 
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(

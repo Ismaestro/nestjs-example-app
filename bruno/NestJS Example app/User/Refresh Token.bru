@@ -5,17 +5,14 @@ meta {
 }
 
 post {
-  url: {{host}}/{{version}}/user/refresh-token
+  url: {{host}}/{{version}}/user/token/refresh
   body: json
-  auth: bearer
+  auth: none
 }
 
-auth:bearer {
-  token: {{accessToken}}
-}
-
-body:json {
-  {
-    "refreshToken": "{{refreshToken}}"
+script:pre-request {
+  const refreshToken = bru.getEnvVar('refreshToken');
+  if (refreshToken) {
+    req.headers.cookie = `refreshToken=${refreshToken}`;
   }
 }

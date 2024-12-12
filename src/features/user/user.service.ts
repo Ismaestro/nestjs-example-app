@@ -5,6 +5,7 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AppError } from '../../core/enums/app-error.enum';
 import { compare, hash } from 'bcrypt';
@@ -22,7 +23,8 @@ import { PrismaError } from '../../core/enums/prisma-error.enum';
 import { UpdateUserResponse } from './dto/update-user.response';
 import { UpdateUserRequest } from './dto/update-user.request';
 import { RefreshTokenResponse } from './dto/refresh-token.response';
-import { RefreshTokenRequest } from './dto/refresh-token.request';
+import { Request, Response } from 'express';
+import { DateService } from '../../core/services/date.service';
 
 @Injectable()
 export class UserService {
@@ -34,6 +36,7 @@ export class UserService {
     private readonly jwtService: JwtService,
     private readonly languageService: LanguageService,
     private readonly userRepository: UserRepository,
+    private readonly dateService: DateService,
   ) {}
 
   async register(
@@ -87,15 +90,22 @@ export class UserService {
     return user;
   }
 
-  async login(loginRequest: LoginRequest): Promise<LoginResponse> {
+  async login(loginRequest: LoginRequest, response: Response): Promise<LoginResponse> {
     const user = await this.validateUserCredentials(loginRequest);
 
     const tokens = this.generateTokens({ userId: user.id });
     this.logger.log(`[Login]: tokens generated`);
 
+    response.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: this.dateService.convertToMilliseconds(this.appConfigService.jwtRefreshExpiresIn),
+    });
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user;
-    return { ...tokens, user: userWithoutPassword } as LoginResponse;
+    return { accessToken: tokens.accessToken, user: userWithoutPassword } as LoginResponse;
   }
 
   private async validateUserCredentials(loginRequest: LoginRequest): Promise<User> {
@@ -168,15 +178,32 @@ export class UserService {
     }
   }
 
-  async refreshToken(refreshTokenRequest: RefreshTokenRequest): Promise<RefreshTokenResponse> {
-    const { userId } = this.jwtService.verify(refreshTokenRequest.refreshToken, {
+  async refreshToken(request: Request, response: Response): Promise<RefreshTokenResponse> {
+    const { refreshToken } = request.cookies;
+    if (!refreshToken) {
+      throw new UnauthorizedException({
+        code: AppError.TOKEN_NOT_FOUND,
+        message: 'Refresh token is missing',
+      });
+    }
+
+    const { userId } = this.jwtService.verify(refreshToken, {
       secret: this.appConfigService.jwtRefreshSecret,
     });
     this.logger.log(`[RefreshToken]: generated refresh token for user with id ${userId}`);
 
-    return this.generateTokens({
+    const tokens = this.generateTokens({
       userId,
     });
+
+    response.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: this.dateService.convertToMilliseconds(this.appConfigService.jwtRefreshExpiresIn),
+    });
+
+    return { accessToken: tokens.accessToken };
   }
 
   private generateTokens(payload: { userId: string }) {

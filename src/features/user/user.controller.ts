@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Request,
+  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -23,7 +24,7 @@ import { RegisterResponse } from './dto/register.response';
 import { UpdateUserRequest } from './dto/update-user.request';
 import { UpdateUserResponse } from './dto/update-user.response';
 import { RefreshTokenResponse } from './dto/refresh-token.response';
-import { RefreshTokenRequest } from './dto/refresh-token.request';
+import { Request as ExpressRequest, Response as ExpressResponse } from 'express';
 
 @Controller('user')
 @UseInterceptors(ResponseInterceptor)
@@ -45,9 +46,13 @@ export class UserController {
 
   @Post('login')
   @HttpCode(200)
-  async login(@Body() loginRequest: LoginRequest): Promise<LoginResponse> {
+  async login(
+    @Body() loginRequest: LoginRequest,
+    @Res({ passthrough: true }) response: ExpressResponse,
+  ): Promise<LoginResponse> {
     this.logger.log(`[Login]: attempting login user with email "${loginRequest.email}"`);
-    return this.userService.login(loginRequest);
+
+    return this.userService.login(loginRequest, response);
   }
 
   @Get('')
@@ -69,13 +74,13 @@ export class UserController {
     return this.userService.updateUser(userId, updateUserRequest);
   }
 
-  @Post('refresh-token')
+  @Post('token/refresh')
   @HttpCode(200)
-  @UseGuards(UserGuard)
   async refreshToken(
-    @Body() refreshTokenRequest: RefreshTokenRequest,
+    @Request() request: ExpressRequest,
+    @Res({ passthrough: true }) response: ExpressResponse,
   ): Promise<RefreshTokenResponse> {
     this.logger.log(`[RefreshToken]: refreshing token`);
-    return this.userService.refreshToken(refreshTokenRequest);
+    return this.userService.refreshToken(request, response);
   }
 }

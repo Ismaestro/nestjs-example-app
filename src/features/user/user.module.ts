@@ -7,7 +7,6 @@ import { PassportModule } from '@nestjs/passport';
 import { AppConfigService } from '../app-config/app-config.service';
 import { LanguageService } from '../../core/services/language.service';
 import { UserRepository } from './user.repository';
-import { HeaderService } from '../../core/services/header.service';
 import { DateService } from '../../core/services/date.service';
 
 @Module({
@@ -25,7 +24,7 @@ import { DateService } from '../../core/services/date.service';
       imports: [AppConfigModule],
     }),
   ],
-  providers: [JwtService, LanguageService, HeaderService, DateService, UserService, UserRepository],
+  providers: [JwtService, LanguageService, DateService, UserService, UserRepository],
   controllers: [UserController],
 })
 export class UserModule {}

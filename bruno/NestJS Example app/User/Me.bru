@@ -1,15 +1,18 @@
 meta {
   name: Me
   type: http
-  seq: 3
+  seq: 5
 }
 
 get {
   url: {{host}}/{{version}}/user
   body: none
-  auth: bearer
+  auth: none
 }
 
-auth:bearer {
-  token: {{accessToken}}
+script:pre-request {
+  const accessToken = bru.getEnvVar('accessToken');
+  if (accessToken) {
+    req.headers.cookie = `accessToken=${accessToken}`;
+  }
 }

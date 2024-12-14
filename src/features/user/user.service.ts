@@ -13,7 +13,7 @@ import { AppConfigService } from '../app-config/app-config.service';
 import { LanguageService } from '../../core/services/language.service';
 import { LoginRequest } from './dto/login.request';
 import { LoginResponse } from './dto/login.response';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { UserRepository } from './user.repository';
 import { GetMeResponse } from './dto/get-me.response';
 import { RegisterRequest } from './dto/register.request';
@@ -39,34 +39,26 @@ export class UserService {
     private readonly dateService: DateService,
   ) {}
 
-  async register(
-    registerRequest: RegisterRequest,
-    acceptLanguage: string,
-  ): Promise<RegisterResponse> {
+  async register({
+    registerRequest,
+    acceptLanguage,
+    response,
+  }: {
+    registerRequest: RegisterRequest;
+    acceptLanguage: string;
+    response: Response;
+  }): Promise<RegisterResponse> {
     const hashedPassword = await this.hashPassword(registerRequest.password);
     const language = this.languageService.parseAcceptLanguage(acceptLanguage);
     this.logger.log(`[Register]: user language calculated with value "${language}"`);
 
     try {
       const user = await this.createUser({ registerRequest, hashedPassword, language });
-      return {
-        ...this.generateTokens({
-          userId: user.id,
-        }),
-        user,
-      };
+      this.setTokensCookies(response, user.id);
+      this.logger.log(`[Register]: cookies set with tokens`);
+      return { user };
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === PrismaError.UNIQUE_CONSTRAINT_VIOLATION
-      ) {
-        this.logger.warn(`[Register]: user already exists`);
-        throw new ConflictException({
-          code: AppError.USER_DUPLICATED,
-          message: `Unable to complete registration with the provided details`,
-        });
-      }
-      throw new InternalServerErrorException(error);
+      return this.handleRegistrationError(error);
     }
   }
 
@@ -90,22 +82,28 @@ export class UserService {
     return user;
   }
 
+  private handleRegistrationError(error: unknown): never {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === PrismaError.UNIQUE_CONSTRAINT_VIOLATION
+    ) {
+      this.logger.warn(`[Register]: user already exists`);
+      throw new ConflictException({
+        code: AppError.USER_DUPLICATED,
+        message: `Unable to complete registration with the provided details`,
+      });
+    }
+    throw new InternalServerErrorException(error);
+  }
+
   async login(loginRequest: LoginRequest, response: Response): Promise<LoginResponse> {
     const user = await this.validateUserCredentials(loginRequest);
-
-    const tokens = this.generateTokens({ userId: user.id });
-    this.logger.log(`[Login]: tokens generated`);
-
-    response.cookie('refreshToken', tokens.refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      maxAge: this.dateService.convertToMilliseconds(this.appConfigService.jwtRefreshExpiresIn),
-    });
+    this.setTokensCookies(response, user.id);
+    this.logger.log(`[Login]: cookies set with tokens`);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user;
-    return { accessToken: tokens.accessToken, user: userWithoutPassword } as LoginResponse;
+    return { user: userWithoutPassword };
   }
 
   private async validateUserCredentials(loginRequest: LoginRequest): Promise<User> {
@@ -129,11 +127,45 @@ export class UserService {
     return user;
   }
 
+  async refreshToken(request: Request, response: Response): Promise<RefreshTokenResponse> {
+    const { refreshToken } = request.cookies;
+    if (!refreshToken) {
+      throw new UnauthorizedException({
+        code: AppError.TOKEN_NOT_FOUND,
+        message: 'Refresh token is missing',
+      });
+    }
+
+    try {
+      const { userId } = this.jwtService.verify(refreshToken, {
+        secret: this.appConfigService.jwtRefreshSecret,
+      });
+
+      this.setTokensCookies(response, userId);
+      this.logger.log(`[Login]: cookies set with tokens`);
+
+      return {};
+    } catch (error) {
+      this.handleRefreshTokenError(error);
+      return false;
+    }
+  }
+
+  handleRefreshTokenError(error: unknown) {
+    if (error instanceof TokenExpiredError) {
+      throw new UnauthorizedException({
+        code: AppError.REFRESH_TOKEN_EXPIRED,
+        message: `Refresh token expired`,
+      });
+    }
+    throw new UnauthorizedException(error);
+  }
+
   async getMe(userId: string): Promise<GetMeResponse> {
     if (!userId) {
       throw new BadRequestException({
         code: AppError.USER_NOT_FOUND,
-        message: `User not found`,
+        message: `User id not found`,
       });
     }
     const user = await this.userRepository.getUserById(userId);
@@ -172,57 +204,40 @@ export class UserService {
       return { user: userUpdated };
     } catch {
       throw new BadRequestException({
-        code: AppError.UPDATE_USER,
+        code: AppError.UPDATE_USER_FAILED,
         message: `Unable to update user`,
       });
     }
   }
 
-  async refreshToken(request: Request, response: Response): Promise<RefreshTokenResponse> {
-    const { refreshToken } = request.cookies;
-    if (!refreshToken) {
-      throw new UnauthorizedException({
-        code: AppError.TOKEN_NOT_FOUND,
-        message: 'Refresh token is missing',
-      });
-    }
-
-    const { userId } = this.jwtService.verify(refreshToken, {
-      secret: this.appConfigService.jwtRefreshSecret,
-    });
-    this.logger.log(`[RefreshToken]: generated refresh token for user with id ${userId}`);
-
-    const tokens = this.generateTokens({
-      userId,
-    });
-
+  private setTokensCookies(response: Response, userId: string): void {
+    const tokens = {
+      accessToken: this.jwtService.sign(
+        { userId },
+        {
+          secret: this.appConfigService.jwtAccessSecret,
+          expiresIn: this.appConfigService.jwtAccessExpiresIn,
+        },
+      ),
+      refreshToken: this.jwtService.sign(
+        { userId },
+        {
+          secret: this.appConfigService.jwtRefreshSecret,
+          expiresIn: this.appConfigService.jwtRefreshExpiresIn,
+        },
+      ),
+    };
     response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
       maxAge: this.dateService.convertToMilliseconds(this.appConfigService.jwtRefreshExpiresIn),
     });
-
-    return { accessToken: tokens.accessToken };
-  }
-
-  private generateTokens(payload: { userId: string }) {
-    return {
-      accessToken: this.generateToken(payload, {
-        secret: this.appConfigService.jwtAccessSecret,
-        expiresIn: this.appConfigService.jwtAccessExpiresIn,
-      }),
-      refreshToken: this.generateToken(payload, {
-        secret: this.appConfigService.jwtRefreshSecret,
-        expiresIn: this.appConfigService.jwtRefreshExpiresIn,
-      }),
-    };
-  }
-
-  private generateToken(
-    payload: { userId: string },
-    options: { secret: string; expiresIn: string },
-  ): string {
-    return this.jwtService.sign(payload, options);
+    response.cookie('accessToken', tokens.accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: this.dateService.convertToMilliseconds(this.appConfigService.jwtAccessExpiresIn),
+    });
   }
 }

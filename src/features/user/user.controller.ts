@@ -34,14 +34,16 @@ export class UserController {
 
   constructor(private readonly userService: UserService) {}
 
+  // eslint-disable-next-line @typescript-eslint/max-params
   @Post('')
   async register(
     @Body() registerRequest: RegisterRequest,
     @Headers('accept-language') acceptLanguage: string,
+    @Res({ passthrough: true }) response: ExpressResponse,
   ): Promise<RegisterResponse> {
     registerRequest.email = registerRequest.email.trim().toLowerCase();
     this.logger.log(`[Register]: registering user with email "${registerRequest.email}"`);
-    return this.userService.register(registerRequest, acceptLanguage);
+    return this.userService.register({ registerRequest, acceptLanguage, response });
   }
 
   @Post('login')
@@ -51,7 +53,6 @@ export class UserController {
     @Res({ passthrough: true }) response: ExpressResponse,
   ): Promise<LoginResponse> {
     this.logger.log(`[Login]: attempting login user with email "${loginRequest.email}"`);
-
     return this.userService.login(loginRequest, response);
   }
 

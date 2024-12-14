@@ -60,7 +60,10 @@ async function bootstrap() {
   app.use(compression());
 
   if (appConfigService.isCorsEnabled) {
-    app.enableCors();
+    app.enableCors({
+      origin: 'http://localhost:4200',
+      credentials: true,
+    });
   }
 
   if (appConfigService.isSwaggerEnabled) {

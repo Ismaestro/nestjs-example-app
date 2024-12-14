@@ -1,22 +1,25 @@
 meta {
   name: Update
   type: http
-  seq: 5
+  seq: 6
 }
 
 patch {
   url: {{host}}/{{version}}/user
   body: json
-  auth: bearer
-}
-
-auth:bearer {
-  token: {{accessToken}}
+  auth: none
 }
 
 body:json {
   {
-    "firstname": "Ismael Ramos",
-    "language": "es-ES"
+    "firstname": "Pete",
+    "language": "en-US"
+  }
+}
+
+script:pre-request {
+  const accessToken = bru.getEnvVar('accessToken');
+  if (accessToken) {
+    req.headers.cookie = `accessToken=${accessToken}`;
   }
 }

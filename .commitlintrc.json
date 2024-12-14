@@ -12,6 +12,7 @@
         "version",
         "app",
         "core",
+        "authentication",
         "user"
       ]
     ],

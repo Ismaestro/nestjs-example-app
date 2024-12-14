@@ -36,14 +36,14 @@ export class TokenService {
     response.cookie(ACCESS_TOKEN_KEY, tokens.accessToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
       maxAge: this.dateService.convertToMilliseconds(this.appConfigService.jwtAccessExpiresIn),
     });
     if (options?.both) {
       response.cookie(REFRESH_TOKEN_KEY, tokens.refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: 'strict',
+        sameSite: 'none',
         maxAge: this.dateService.convertToMilliseconds(this.appConfigService.jwtRefreshExpiresIn),
       });
     }

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Language } from '../../core/enums/language.enum';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -22,16 +21,12 @@ export class AppConfigService {
     return Number(this.configService.get<number>('global.port'));
   }
 
-  get isCorsEnabled(): boolean {
-    return this.configService.get<boolean>('global.isCorsEnabled')!;
-  }
-
-  get defaultLanguage(): Language {
-    return this.configService.get<Language>('global.defaultLanguage')!;
-  }
-
   get bcryptSaltRounds(): number {
     return this.configService.get<number>('global.bcryptSaltRounds')!;
+  }
+
+  get frontDomain(): string {
+    return this.configService.get<string>('global.frontDomain')!;
   }
 
   get jwtAccessSecret(): string {

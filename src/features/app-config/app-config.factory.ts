@@ -5,10 +5,9 @@ export default [
     environment: process.env.ENVIRONMENT,
     name: process.env.APP_NAME,
     url: process.env.APP_URL,
-    isCorsEnabled: process.env.IS_CORS_ENABLED,
-    defaultLanguage: process.env.DEFAULT_LANGUAGE,
     port: process.env.PORT,
     bcryptSaltRounds: process.env.BCRYPT_SALT_ROUNDS,
+    frontDomain: process.env.FRONT_DOMAIN,
   })),
 
   registerAs('jwt', () => ({

@@ -32,8 +32,6 @@ async function bootstrap() {
     }),
   );
 
-  app.use(cookieParser());
-
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(
     new PrismaClientExceptionFilter(httpAdapter),
@@ -48,6 +46,20 @@ async function bootstrap() {
     }),
   );
 
+  app.use(cookieParser());
+  app.enableCors({
+    origin: appConfigService.frontDomain,
+    credentials: true,
+  });
+
+  const API_VERSION = 'v1';
+  app.setGlobalPrefix(API_VERSION);
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
+
+  app.enableShutdownHooks();
+
   const FIFTEEN_MINUTES = 15 * 60 * 1000;
   const CONNECTIONS_LIMIT = 100;
   app.use(
@@ -59,13 +71,6 @@ async function bootstrap() {
 
   app.use(compression());
 
-  if (appConfigService.isCorsEnabled) {
-    app.enableCors({
-      origin: 'http://localhost:4200',
-      credentials: true,
-    });
-  }
-
   if (appConfigService.isSwaggerEnabled) {
     const options = new DocumentBuilder()
       .setTitle(appConfigService.name)
@@ -76,13 +81,6 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup(appConfigService.swaggerPath, app, document);
   }
-
-  app.setGlobalPrefix('v1');
-  app.enableVersioning({
-    type: VersioningType.URI,
-  });
-
-  app.enableShutdownHooks();
 
   const port = String(appConfigService.port);
   await app.listen(port);

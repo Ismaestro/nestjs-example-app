@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Language as PrismaLanguage } from '@prisma/client';
 import { Language as AppLanguage } from '../enums/language.enum';
+import { DEFAULT_APP_LANGUAGE, DEFAULT_PRISMA_LANGUAGE } from '../constants/default-language.const';
 
 @Injectable()
 export class LanguageService {
   parseAcceptLanguage(acceptLanguage: string): PrismaLanguage {
     if (!acceptLanguage) {
-      return PrismaLanguage.EN_US;
+      return DEFAULT_PRISMA_LANGUAGE;
     }
 
     const supportedLanguages = Object.values(PrismaLanguage);
@@ -21,7 +22,7 @@ export class LanguageService {
       }
     }
 
-    return PrismaLanguage.EN_US;
+    return DEFAULT_PRISMA_LANGUAGE;
   }
 
   convertAppLanguage(language: AppLanguage): PrismaLanguage {
@@ -33,7 +34,7 @@ export class LanguageService {
         return PrismaLanguage.EN_US;
       }
       default: {
-        return PrismaLanguage.EN_US;
+        return DEFAULT_PRISMA_LANGUAGE;
       }
     }
   }
@@ -47,7 +48,7 @@ export class LanguageService {
         return AppLanguage.EN_US;
       }
       default: {
-        return AppLanguage.EN_US;
+        return DEFAULT_APP_LANGUAGE;
       }
     }
   }

@@ -5,7 +5,7 @@ import { AppConfigService } from '../app-config/app-config.service';
 import { AppError } from '../../core/enums/app-error.enum';
 
 @Injectable()
-export class UserGuard implements CanActivate {
+export class AuthenticationGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private readonly appConfigService: AppConfigService,

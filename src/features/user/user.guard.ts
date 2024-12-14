@@ -22,16 +22,16 @@ export class UserGuard implements CanActivate {
     }
 
     try {
-      this.jwtService.verify(accessToken, {
+      const decodedToken = this.jwtService.verify(accessToken, {
         secret: this.appConfigService.jwtAccessSecret,
       });
+
+      // @ts-expect-error: Property userId is dynamically added to the request object in the JWT Auth Guard
+      request.userId = decodedToken.userId;
     } catch (error) {
       this.handleError(error);
       return false;
     }
-
-    // @ts-expect-error: Property userId is dynamically added to the request object in the JWT Auth Guard
-    request.userId = decodedToken.userId;
 
     return true;
   }

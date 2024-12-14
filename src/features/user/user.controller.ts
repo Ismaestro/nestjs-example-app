@@ -56,6 +56,16 @@ export class UserController {
     return this.userService.login(loginRequest, response);
   }
 
+  @Post('token/refresh')
+  @HttpCode(200)
+  async refreshToken(
+    @Request() request: ExpressRequest,
+    @Res({ passthrough: true }) response: ExpressResponse,
+  ): Promise<RefreshTokenResponse> {
+    this.logger.log(`[RefreshToken]: refreshing token`);
+    return this.userService.refreshToken(request, response);
+  }
+
   @Get('')
   @UseGuards(UserGuard)
   async getMe(@Request() request: { userId: string }): Promise<GetMeResponse> {
@@ -73,15 +83,5 @@ export class UserController {
     const { userId } = request;
     this.logger.log(`[UpdateUser]: user with id "${userId}" updating itself`);
     return this.userService.updateUser(userId, updateUserRequest);
-  }
-
-  @Post('token/refresh')
-  @HttpCode(200)
-  async refreshToken(
-    @Request() request: ExpressRequest,
-    @Res({ passthrough: true }) response: ExpressResponse,
-  ): Promise<RefreshTokenResponse> {
-    this.logger.log(`[RefreshToken]: refreshing token`);
-    return this.userService.refreshToken(request, response);
   }
 }

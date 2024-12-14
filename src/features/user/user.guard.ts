@@ -16,8 +16,8 @@ export class UserGuard implements CanActivate {
     const { accessToken } = request.cookies;
     if (!accessToken) {
       throw new UnauthorizedException({
-        code: AppError.TOKEN_NOT_FOUND,
-        message: `Token not found`,
+        code: AppError.ACCESS_TOKEN_NOT_FOUND,
+        message: `Access token not found`,
       });
     }
 

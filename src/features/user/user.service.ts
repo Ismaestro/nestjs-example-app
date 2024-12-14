@@ -131,8 +131,8 @@ export class UserService {
     const { refreshToken } = request.cookies;
     if (!refreshToken) {
       throw new UnauthorizedException({
-        code: AppError.TOKEN_NOT_FOUND,
-        message: 'Refresh token is missing',
+        code: AppError.REFRESH_TOKEN_NOT_FOUND,
+        message: 'Refresh token not found',
       });
     }
 

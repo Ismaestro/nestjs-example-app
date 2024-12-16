@@ -13,13 +13,15 @@ generator dbml {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt DateTime @updatedAt @db.Timestamptz(3)
-  email     String   @unique
-  password  String
-  firstname String?
-  language  Language
+  id                 String   @id @default(uuid())
+  createdAt          DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime @updatedAt @db.Timestamptz(3)
+  email              String   @unique
+  password           String
+  firstname          String
+  language           Language
+  favouritePokemonId Int
+  terms              Boolean  @default(false)
 }
 
 enum Language {

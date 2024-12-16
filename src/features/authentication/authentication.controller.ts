@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Headers,
@@ -18,6 +19,7 @@ import { RegisterResponse } from './dto/register.response';
 import { RefreshTokenResponse } from './dto/refresh-token.response';
 import { Request as ExpressRequest, Response as ExpressResponse } from 'express';
 import { AuthenticationService } from './services/authentication.service';
+import { AppError } from '../../core/enums/app-error.enum';
 
 @Controller('authentication')
 @UseInterceptors(ResponseInterceptor)
@@ -34,6 +36,13 @@ export class AuthenticationController {
     @Headers('accept-language') acceptLanguage: string,
     @Res({ passthrough: true }) response: ExpressResponse,
   ): Promise<RegisterResponse> {
+    // TODO: try to do it with class validator
+    if (!registerRequest.terms) {
+      throw new BadRequestException({
+        code: AppError.TERMS_MUST_BE_TRUE,
+        message: `You must accept the terms and conditions`,
+      });
+    }
     registerRequest.email = registerRequest.email.trim().toLowerCase();
     this.logger.log(`[Register]: registering user with email "${registerRequest.email}"`);
     return this.authenticationService.register({ registerRequest, acceptLanguage, response });

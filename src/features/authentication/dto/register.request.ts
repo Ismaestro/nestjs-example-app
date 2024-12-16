@@ -1,4 +1,12 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MinLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Matches,
+  MinLength,
+} from 'class-validator';
 
 export class RegisterRequest {
   @IsEmail()
@@ -8,19 +16,16 @@ export class RegisterRequest {
   @IsString()
   @MinLength(4)
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\dA-Za-z]{4,}$/u, {
-    message: 'password is too weak',
+    message: 'Password is too weak',
   })
   password!: string;
 
-  @IsOptional()
   @IsString()
-  firstname?: string;
+  firstname!: string;
 
-  @IsOptional()
-  @IsString()
-  lastname?: string;
+  @IsNumber()
+  favouritePokemonId!: number;
 
-  @IsOptional()
-  @IsString()
-  language?: string;
+  @IsBoolean()
+  terms!: boolean;
 }

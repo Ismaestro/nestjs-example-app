@@ -8,8 +8,10 @@ CREATE TABLE "User" (
     "updatedAt" TIMESTAMPTZ(3) NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "firstname" TEXT,
+    "firstname" TEXT NOT NULL,
     "language" "Language" NOT NULL,
+    "favouritePokemonId" INTEGER NOT NULL,
+    "terms" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

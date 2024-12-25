@@ -21,7 +21,7 @@ export class RegisterRequest {
   password!: string;
 
   @IsString()
-  firstname!: string;
+  name!: string;
 
   @IsNumber()
   favouritePokemonId!: number;

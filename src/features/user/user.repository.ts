@@ -39,14 +39,26 @@ export class UserRepository {
     });
   }
 
-  async updateUserById(userId: string, userData: User): Promise<Omit<User, 'password'>> {
+  async updateUserById(
+    userId: string,
+    userData: Partial<Omit<User, 'password'>>,
+  ): Promise<Omit<User, 'password'>> {
     return this.prisma.user.update({
-      omit: {
-        password: true,
-      },
       data: userData,
       where: {
         id: userId,
+      },
+      select: {
+        password: false,
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        email: true,
+        name: true,
+        language: true,
+        favouritePokemonId: true,
+        terms: true,
+        caughtPokemonIds: true,
       },
     });
   }

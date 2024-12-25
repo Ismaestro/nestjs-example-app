@@ -16,12 +16,13 @@ model User {
   id                 String   @id @default(uuid())
   createdAt          DateTime @default(now()) @db.Timestamptz(3)
   updatedAt          DateTime @updatedAt @db.Timestamptz(3)
+  name               String
   email              String   @unique
   password           String
-  firstname          String
-  language           Language
   favouritePokemonId Int
+  language           Language
   terms              Boolean  @default(false)
+  caughtPokemonIds   Int[]    @default([])
 }
 
 enum Language {

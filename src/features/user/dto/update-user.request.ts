@@ -4,7 +4,7 @@ import { Language as AppLanguage } from '../../../core/enums/language.enum';
 export class UpdateUserRequest {
   @IsOptional()
   @IsString()
-  firstname?: string;
+  name?: string;
 
   @IsOptional()
   @IsEnum(AppLanguage)

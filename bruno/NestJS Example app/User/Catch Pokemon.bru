@@ -1,19 +1,18 @@
 meta {
-  name: Update
+  name: Catch Pokemon
   type: http
-  seq: 6
+  seq: 7
 }
 
-patch {
-  url: {{host}}/{{version}}/user
+post {
+  url: {{host}}/{{version}}/user/pokemon/catch
   body: json
   auth: none
 }
 
 body:json {
   {
-    "name": "Ismael",
-    "language": "en-US"
+    "pokemonId": 1
   }
 }
 

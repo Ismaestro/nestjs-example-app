@@ -83,13 +83,13 @@ npm run prisma:generate
 Run migrations to create necessary tables in the DB
 
 ```bash
-npm run migrate:dev
+npm run prisma:migrate:dev
 ```
 
 Seed the database with the first user
 
 ```bash
-npm run seed
+npm run prisma:seed
 ```
 
 Start the application

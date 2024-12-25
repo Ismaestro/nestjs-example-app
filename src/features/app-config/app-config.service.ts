@@ -25,10 +25,6 @@ export class AppConfigService {
     return this.configService.get<number>('global.bcryptSaltRounds')!;
   }
 
-  get frontDomain(): string {
-    return this.configService.get<string>('global.frontDomain')!;
-  }
-
   get jwtAccessSecret(): string {
     return this.configService.get<string>('jwt.accessSecret')!;
   }

@@ -7,7 +7,6 @@ export default [
     url: process.env.APP_URL,
     port: process.env.PORT,
     bcryptSaltRounds: process.env.BCRYPT_SALT_ROUNDS,
-    frontDomain: process.env.FRONT_DOMAIN,
   })),
 
   registerAs('jwt', () => ({

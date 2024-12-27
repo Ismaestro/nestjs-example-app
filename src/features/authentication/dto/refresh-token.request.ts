@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class RefreshTokenResponse {
+export class RefreshTokenRequest {
   @IsNotEmpty()
   @IsString()
-  accessToken!: string;
+  refreshToken!: string;
 }

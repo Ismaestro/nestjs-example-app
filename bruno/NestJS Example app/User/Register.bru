@@ -30,6 +30,7 @@ tests {
   if (accessTokenValue) {
     bru.setEnvVar('accessToken', accessTokenValue);
   }
+  
   var refreshTokenValue = body?.data?.refreshToken;
   if (refreshTokenValue) {
     bru.setEnvVar('refreshToken', refreshTokenValue);

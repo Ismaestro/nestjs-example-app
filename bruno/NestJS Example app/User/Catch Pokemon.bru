@@ -7,18 +7,15 @@ meta {
 post {
   url: {{host}}/{{version}}/user/pokemon/catch
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
 }
 
 body:json {
   {
     "pokemonId": 1
-  }
-}
-
-script:pre-request {
-  const accessToken = bru.getEnvVar('accessToken');
-  if (accessToken) {
-    req.headers.cookie = `accessToken=${accessToken}`;
   }
 }

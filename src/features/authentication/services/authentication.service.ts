@@ -18,9 +18,10 @@ import { Prisma, User } from '@prisma/client';
 import { RegisterResponse } from '../dto/register.response';
 import { PrismaError } from '../../../core/enums/prisma-error.enum';
 import { RefreshTokenResponse } from '../dto/refresh-token.response';
-import { Request, Response } from 'express';
 import { UserRepository } from '../../user/user.repository';
 import { TokenService } from './token.service';
+import { TokenExpiredError } from '@nestjs/jwt';
+import { RefreshTokenRequest } from '../dto/refresh-token.request';
 
 @Injectable()
 export class AuthenticationService {
@@ -37,11 +38,9 @@ export class AuthenticationService {
   async register({
     registerRequest,
     acceptLanguage,
-    response,
   }: {
     registerRequest: RegisterRequest;
     acceptLanguage: string;
-    response: Response;
   }): Promise<RegisterResponse> {
     const hashedPassword = await this.hashPassword(registerRequest.password);
     const language = this.languageService.parseAcceptLanguage(acceptLanguage);
@@ -55,9 +54,9 @@ export class AuthenticationService {
       });
       this.logger.log(`[Register]: user created with id "${user.id}"`);
 
-      this.tokenService.setCookies({ response, userId: user.id, options: { both: true } });
+      const tokens = this.tokenService.createTokens(user.id);
       this.logger.log(`[Register]: cookies set with tokens`);
-      return { user };
+      return { user, ...tokens };
     } catch (error) {
       return this.handleRegistrationError(error);
     }
@@ -83,14 +82,14 @@ export class AuthenticationService {
     throw new InternalServerErrorException(error);
   }
 
-  async login(loginRequest: LoginRequest, response: Response): Promise<LoginResponse> {
+  async login(loginRequest: LoginRequest): Promise<LoginResponse> {
     const user = await this.validateUserCredentials(loginRequest);
-    this.tokenService.setCookies({ response, userId: user.id, options: { both: true } });
+    const tokens = this.tokenService.createTokens(user.id);
     this.logger.log(`[Login]: cookies set with tokens`);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user;
-    return { user: userWithoutPassword };
+    return { user: userWithoutPassword, ...tokens };
   }
 
   private async validateUserCredentials(loginRequest: LoginRequest): Promise<User> {
@@ -114,23 +113,20 @@ export class AuthenticationService {
     return user;
   }
 
-  async refreshToken(request: Request, response: Response): Promise<RefreshTokenResponse> {
-    const { refreshToken } = request.cookies;
-    if (!refreshToken) {
-      throw new UnauthorizedException({
-        code: AppError.REFRESH_TOKEN_NOT_FOUND,
-        message: 'Refresh token not found',
-      });
-    }
-
+  async refreshToken(refreshTokenRequest: RefreshTokenRequest): Promise<RefreshTokenResponse> {
     try {
-      const { userId } = this.tokenService.verifyToken(refreshToken);
-      this.tokenService.setCookies({ response, userId });
+      const { userId } = this.tokenService.verifyToken(refreshTokenRequest.refreshToken);
+      const tokens = this.tokenService.createTokens(userId);
       this.logger.log(`[Login]: token verified and cookies settle`);
-      return {};
+      return { accessToken: tokens.accessToken };
     } catch (error) {
-      this.tokenService.handleRefreshTokenError(error);
-      return false;
+      if (error instanceof TokenExpiredError) {
+        throw new UnauthorizedException({
+          code: AppError.REFRESH_TOKEN_EXPIRED,
+          message: `Refresh token expired`,
+        });
+      }
+      throw new UnauthorizedException(error);
     }
   }
 }

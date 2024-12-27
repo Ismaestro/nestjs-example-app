@@ -13,7 +13,7 @@ export class AuthenticationGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    const { accessToken } = request.cookies;
+    const accessToken = this.extractTokenFromHeader(request);
     if (!accessToken) {
       throw new UnauthorizedException({
         code: AppError.ACCESS_TOKEN_NOT_FOUND,
@@ -44,5 +44,13 @@ export class AuthenticationGuard implements CanActivate {
       });
     }
     throw new UnauthorizedException(error);
+  }
+
+  private extractTokenFromHeader(request: Request): string | null {
+    const authHeader = request.headers.authorization;
+    if (!authHeader?.startsWith('Bearer ')) {
+      return null;
+    }
+    return authHeader ? authHeader.split(' ')[1] : '';
   }
 }

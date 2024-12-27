@@ -7,12 +7,9 @@ meta {
 get {
   url: {{host}}/{{version}}/user
   body: none
-  auth: none
+  auth: bearer
 }
 
-script:pre-request {
-  const accessToken = bru.getEnvVar('accessToken');
-  if (accessToken) {
-    req.headers.cookie = `accessToken=${accessToken}`;
-  }
+auth:bearer {
+  token: {{accessToken}}
 }

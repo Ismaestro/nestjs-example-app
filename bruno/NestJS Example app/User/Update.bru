@@ -7,19 +7,16 @@ meta {
 patch {
   url: {{host}}/{{version}}/user
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
 }
 
 body:json {
   {
     "name": "Ismael",
     "language": "en-US"
-  }
-}
-
-script:pre-request {
-  const accessToken = bru.getEnvVar('accessToken');
-  if (accessToken) {
-    req.headers.cookie = `accessToken=${accessToken}`;
   }
 }

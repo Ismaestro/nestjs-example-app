@@ -7,12 +7,23 @@ meta {
 post {
   url: {{host}}/{{version}}/authentication/token/refresh
   body: json
-  auth: none
+  auth: bearer
 }
 
-script:pre-request {
-  const refreshToken = bru.getEnvVar('refreshToken');
-  if (refreshToken) {
-    req.headers.cookie = `refreshToken=${refreshToken}`;
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "refreshToken": "{{refreshToken}}"
+  }
+}
+
+tests {
+  var body = res.getBody();
+  var accessTokenValue = body?.data?.accessToken;
+  if (accessTokenValue) {
+    bru.setEnvVar('accessToken', accessTokenValue);
   }
 }

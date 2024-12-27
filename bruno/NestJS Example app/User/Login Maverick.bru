@@ -24,23 +24,8 @@ tests {
     bru.setEnvVar('accessToken', accessTokenValue);
   }
   
-  const setCookieHeader = res.headers['set-cookie'];
-  
-  if (setCookieHeader) {
-      const accessTokenCookie = setCookieHeader.find(cookie => cookie.includes('accessToken='));
-  
-    let match = accessTokenCookie.match(/accessToken=([^;]+)/);
-    if (match) {
-      const accessToken = match[1];
-      bru.setEnvVar('accessToken', accessToken);
-    }
-    
-    const refreshTokenCookie = setCookieHeader.find(cookie => cookie.includes('refreshToken='));
-  
-    match = refreshTokenCookie.match(/refreshToken=([^;]+)/);
-    if (match) {
-      const refreshToken = match[1];
-      bru.setEnvVar('refreshToken', refreshToken);
-    }
+  var refreshTokenValue = body?.data?.refreshToken;
+  if (refreshTokenValue) {
+    bru.setEnvVar('refreshToken', refreshTokenValue);
   }
 }

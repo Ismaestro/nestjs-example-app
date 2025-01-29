@@ -8,6 +8,7 @@ coverage/
 
 prisma/dbml
 .env
+service-account.json
 
 npm-debug.log
 /bruno/NestJS Example app/environments/Production.bru

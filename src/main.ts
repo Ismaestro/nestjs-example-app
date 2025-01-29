@@ -60,12 +60,13 @@ async function bootstrap() {
 
   app.enableShutdownHooks();
 
-  const FIFTEEN_MINUTES = 15 * 60 * 1000;
-  const CONNECTIONS_LIMIT = 100;
+  const ONE_MINUTE = 60 * 1000;
+  const CONNECTIONS_LIMIT = 500;
   app.use(
     rateLimit({
-      windowMs: FIFTEEN_MINUTES,
+      windowMs: ONE_MINUTE,
       limit: CONNECTIONS_LIMIT,
+      skip: (request) => request.path.includes('analytics'),
     }),
   );
 

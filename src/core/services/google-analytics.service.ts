@@ -31,7 +31,7 @@ export class GoogleAnalyticsService implements OnModuleInit {
         property: `properties/${this.propertyId}`,
         minuteRanges: [
           {
-            startMinutesAgo: 1,
+            startMinutesAgo: 5,
           },
         ],
         metrics: [{ name: 'activeUsers' }],

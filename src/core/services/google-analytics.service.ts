@@ -1,6 +1,8 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { BetaAnalyticsDataClient } from '@google-analytics/data';
 import * as fs from 'node:fs';
+import { google } from '@google-analytics/data/build/protos/protos';
+import IRunRealtimeReportResponse = google.analytics.data.v1beta.IRunRealtimeReportResponse;
 
 @Injectable()
 export class GoogleAnalyticsService implements OnModuleInit {
@@ -13,36 +15,26 @@ export class GoogleAnalyticsService implements OnModuleInit {
     if (!credentialsBase64) {
       throw new Error('Missing Google Analytics credentials');
     }
-
     const credentialsJson = Buffer.from(credentialsBase64, 'base64').toString('utf8');
-
-    // Write JSON to a temporary file
     const temporaryFilePath = '/tmp/service-account.json';
     fs.writeFileSync(temporaryFilePath, credentialsJson);
-
     this.analyticsDataClient = new BetaAnalyticsDataClient({
       keyFilename: temporaryFilePath,
     });
   }
 
   async getRealtimeUsers(): Promise<number> {
-    try {
-      const [response] = await this.analyticsDataClient.runRealtimeReport({
-        property: `properties/${this.propertyId}`,
-        minuteRanges: [
-          {
-            startMinutesAgo: 5,
-          },
-        ],
-        metrics: [{ name: 'activeUsers' }],
-      });
+    const [response] = await this.analyticsDataClient.runRealtimeReport({
+      property: `properties/${this.propertyId}`,
+      minuteRanges: [{ startMinutesAgo: 5 }],
+      metrics: [{ name: 'activeUsers' }],
+    });
 
-      return response?.rows?.[0]?.metricValues?.[0]?.value
-        ? Number.parseInt(response.rows[0].metricValues[0].value, 10)
-        : 0;
-    } catch (error) {
-      console.error('Error fetching real-time users:', error);
-      throw error;
-    }
+    return this.extractMetricValue(response);
+  }
+
+  // eslint-disable-next-line complexity
+  private extractMetricValue(response: IRunRealtimeReportResponse): number {
+    return Number.parseInt(response?.rows?.[0]?.metricValues?.[0]?.value || '0', 10);
   }
 }

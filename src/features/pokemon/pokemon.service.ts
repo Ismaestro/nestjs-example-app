@@ -35,6 +35,6 @@ export class PokemonService {
       numbers.add(String(randomNumber));
     }
 
-    return [...numbers] as string[];
+    return [...numbers, '35'] as string[];
   }
 }

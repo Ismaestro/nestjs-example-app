@@ -13,7 +13,8 @@
         "app",
         "core",
         "authentication",
-        "user"
+        "user",
+        "pokemon"
       ]
     ],
     "subject-case": [2, "always", "lower-case"],

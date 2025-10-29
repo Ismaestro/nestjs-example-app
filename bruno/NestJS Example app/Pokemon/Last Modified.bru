@@ -5,11 +5,7 @@ meta {
 }
 
 get {
-  url: {{host}}/{{version}}/user
+  url: {{host}}/{{version}}/pokemon/last-updated
   body: none
-  auth: bearer
-}
-
-auth:bearer {
-  token: {{accessToken}}
+  auth: none
 }

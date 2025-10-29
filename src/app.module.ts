@@ -5,6 +5,7 @@ import { HealthModule } from './features/health/health.module';
 import { AppConfigModule } from './features/app-config/app-config.module';
 import { AuthenticationModule } from './features/authentication/authentication.module';
 import { GoogleAnalyticsModule } from './features/google-analytics/google-analytics.module';
+import { PokemonModule } from './features/pokemon/pokemon.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { GoogleAnalyticsModule } from './features/google-analytics/google-analyt
     HealthModule,
     AuthenticationModule,
     UserModule,
+    PokemonModule,
     GoogleAnalyticsModule,
   ],
 })

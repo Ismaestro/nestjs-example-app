@@ -1,0 +1,15 @@
+meta {
+  name: Last Modified
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{host}}/{{version}}/user
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

@@ -15,8 +15,9 @@ export class RegisterRequest {
   @IsNotEmpty()
   @IsString()
   @MinLength(4)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\dA-Za-z]{4,}$/u, {
-    message: 'Password is too weak',
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/u, {
+    message:
+      'Password must have at least 8 characters, including uppercase, lowercase, and a number',
   })
   password!: string;
 

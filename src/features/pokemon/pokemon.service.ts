@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { LastUpdatedPokemonResponse } from './dto/last-updated-pokemon.response';
+import { POKEMON_NAMES } from './pokemon.constants';
 
 @Injectable()
 export class PokemonService {
@@ -28,13 +29,12 @@ export class PokemonService {
 
   private getRandomArray(): string[] {
     const length = Math.floor(Math.random() * 3) + 1;
-    const numbers = new Set();
-
-    while (numbers.size < length) {
-      const randomNumber = Math.floor(Math.random() * 1000) + 1;
-      numbers.add(String(randomNumber));
+    const selected = new Set<string>();
+    while (selected.size < length) {
+      const randomIndex = Math.floor(Math.random() * POKEMON_NAMES.length);
+      selected.add(POKEMON_NAMES[randomIndex]);
     }
-
-    return [...numbers, '35'] as string[];
+    selected.add('pikachu');
+    return [...selected];
   }
 }

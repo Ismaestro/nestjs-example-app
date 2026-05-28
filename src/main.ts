@@ -24,6 +24,9 @@ async function bootstrap() {
         : [...minimumLoggerLevels, 'debug', 'verbose'],
   });
 
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.set('trust proxy', true);
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

@@ -1,5 +1,11 @@
-.vscode/
-node_modules/
+.vscode
 npm-debug.log
-dist/
-test/
+test
+node_modules
+dist
+.git
+.github
+.nx
+coverage
+tmp
+.cache

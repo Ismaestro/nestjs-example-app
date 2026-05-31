@@ -11,8 +11,9 @@ COPY . .
 
 RUN npx prisma generate
 RUN npm run build
+RUN npm prune --omit=dev
 
-FROM node:22 AS runtime
+FROM node:22-alpine AS runtime
 
 WORKDIR /app
 

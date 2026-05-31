@@ -51,7 +51,7 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.enableCors({
-    origin: ['http://localhost:4200', 'https://angular-example-app.ismaestro.com'],
+    origin: ['https://angular-example-app.ismaestro.com', 'http://localhost:4200'],
     credentials: true,
   });
 

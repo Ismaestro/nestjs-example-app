@@ -51,7 +51,7 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.enableCors({
-    origin: ['http://localhost:4200', 'https://angular-example-app.netlify.app'],
+    origin: ['http://localhost:4200', 'https://angular-example-app.ismaestro.com'],
     credentials: true,
   });
 

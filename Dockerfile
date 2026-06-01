@@ -1,4 +1,4 @@
-FROM node:22-slim AS builder
+FROM node:22-bookworm-slim AS builder
 
 WORKDIR /app
 
@@ -15,12 +15,9 @@ RUN npm run build
 # Eliminamos dependencias de desarrollo
 RUN npm prune --omit=dev
 
-FROM node:22-alpine
+FROM node:22-bookworm-slim
 
 WORKDIR /app
-
-# Prisma necesita openssl en Alpine
-RUN apk add --no-cache openssl
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist

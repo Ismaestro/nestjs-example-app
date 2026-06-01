@@ -11,7 +11,7 @@
     Base project made with much :heart:. Contains CRUD, advanced patterns and much more!
     <br>
     <br>
-    DEMO: <a href="https://angular-example-app.netlify.app">Angular Example App using this project</a>
+    DEMO: <a href="https://angular-example-app.ismaestro.com">Angular Example App using this project</a>
   </p>
 </p>
 

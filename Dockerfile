@@ -2,6 +2,8 @@ FROM node:22-bookworm-slim AS builder
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y openssl
+
 COPY package*.json .npmrc ./
 COPY prisma ./prisma/
 
@@ -11,13 +13,13 @@ COPY . .
 
 RUN npx prisma generate
 RUN npm run build
-
-# Eliminamos dependencias de desarrollo
 RUN npm prune --omit=dev
 
 FROM node:22-bookworm-slim
 
 WORKDIR /app
+
+RUN apt-get update && apt-get install -y openssl
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
@@ -28,4 +30,4 @@ ENV NODE_ENV=production
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run start:prod"]
+CMD ["node", "dist/main"]

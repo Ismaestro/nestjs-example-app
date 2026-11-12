@@ -9,9 +9,6 @@
     <br>
     <br>
     Base project made with much :heart:. Contains CRUD, advanced patterns and much more!
-    <br>
-    <br>
-    DEMO: <a href="https://angular-example-app.ismaestro.com">Angular Example App using this project</a>
   </p>
 </p>
 
@@ -25,9 +22,12 @@
 - [x] Usage of Prisma (An ORM) :)
 - [x] A Postgres DB to store the users
 - [x] Bruno collection ready to import
-- [x] App deployed into Fy.io.
+
+There is no public demo: run it locally following the steps below.
 
 ## Setup
+
+Requirements: Node.js >= 22.12.0, npm and Docker (to run Postgres).
 
 Install dependencies first
 
